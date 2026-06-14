@@ -30,7 +30,7 @@ async function loadConfig() {
 
 // ========== INITIALISATION APP ==========
 async function initApp() {
-    // FIX: parenthèse fermante manquante ici
+    // FIX 1: parenthèse fermante ajoutée ici
     const { data: { user } = await supabase.auth.getUser();
 
     if (user) {
@@ -43,6 +43,10 @@ async function initApp() {
     }
 
     attachEventListeners();
+
+    // FIX 2: Réactiver les boutons une fois supabase prêt
+    document.getElementById('btnSignup').disabled = false;
+    document.getElementById('btnLogin').disabled = false;
 }
 
 function attachEventListeners() {
@@ -64,6 +68,16 @@ function attachEventListeners() {
     document.getElementById('btnBackToSwipe').addEventListener('click', () => {
         unsubscribeChat();
         showSwipe();
+    });
+
+    // FIX 3: Brancher les liens Login/Signup
+    document.getElementById('linkToLogin').addEventListener('click', (e) => {
+        e.preventDefault();
+        showLogin();
+    });
+    document.getElementById('linkToSignup').addEventListener('click', (e) => {
+        e.preventDefault();
+        showSignup();
     });
 
     document.getElementById('chatInput').addEventListener('input', (e) => {
@@ -280,7 +294,7 @@ async function sendMessage() {
 function subscribeToChat() {
     if (realtimeSubscription) unsubscribeChat();
     realtimeSubscription = supabase.channel(`messages-${currentMatch}`)
-       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `conversation_id=eq.${currentMatch}` },
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `conversation_id=eq.${currentMatch}` },
             (payload) => {
                 if (payload.new.user_id!== currentUser.id) {
                     renderMessage(payload.new);
