@@ -1,3 +1,4 @@
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
 // ========== LOAD CONFIG ==========
 let SUPABASE_URL = '';
 let SUPABASE_KEY = '';
@@ -26,8 +27,7 @@ let uploadedPhotoFile = null;
 let realtimeSubscription = null;
 
 // ========== INITIALISATION ==========
-async function init() {
-    const { createClient } = window.supabase;
+async function init() {    
     supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
     // Vérifier si utilisateur déjà connecté
