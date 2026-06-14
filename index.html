@@ -4,9 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KELVIN LOVING - Site de Rencontre</title>
+    
+    <!-- Police Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- SUPPRIME cette ligne, on l’importe via app.js maintenant -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> -->
 </head>
 <body>
     <div class="container">
@@ -48,7 +55,7 @@
 
                 <div class="form-group">
                     <label class="form-label">Âge</label>
-                    <input type="number" id="signupAge" class="form-input" placeholder="18">
+                    <input type="number" id="signupAge" class="form-input" placeholder="18" min="18">
                 </div>
 
                 <div class="form-group">
@@ -56,10 +63,10 @@
                     <textarea id="signupBio" class="form-textarea" placeholder="Parlez de vous..."></textarea>
                 </div>
 
-                <button id="btnSignup" class="btn-primary">S'inscrire</button>
+                <button id="btnSignup" class="btn-primary" disabled>S'inscrire</button>
                 
                 <div class="auth-toggle">
-                    Déjà inscrit ? <a onclick="showLogin()">Se connecter</a>
+                    Déjà inscrit ? <a href="#" id="linkToLogin">Se connecter</a>
                 </div>
             </div>
         </div>
@@ -80,10 +87,10 @@
                     <input type="password" id="loginPassword" class="form-input" placeholder="Votre mot de passe">
                 </div>
 
-                <button id="btnLogin" class="btn-primary">Se connecter</button>
+                <button id="btnLogin" class="btn-primary" disabled>Se connecter</button>
                 
                 <div class="auth-toggle">
-                    Pas encore inscrit ? <a onclick="showSignup()">S'inscrire</a>
+                    Pas encore inscrit ? <a href="#" id="linkToSignup">S'inscrire</a>
                 </div>
             </div>
         </div>
@@ -118,6 +125,7 @@
         </div>
     </div>
 
+    <!-- SCRIPT MODULE -->
     <script type="module" src="app.js"></script>
 </body>
 </html>
