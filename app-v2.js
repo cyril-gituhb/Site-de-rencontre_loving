@@ -1,25 +1,42 @@
-// ========== MODE 100% FRONT - ZÉRO BACKEND ==========
-let currentUser = { id: 'test-123', email: 'test@test.com' };
-let currentUserProfile = { display_name: 'Test User', age: 25, bio: 'Mode test', photo_url: null };
+// ========== MODE FULL SUPABASE ==========
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+
+let supabase;
+let currentUser = null;
+let currentUserProfile = null;
 let currentMatch = null;
 let currentMatchProfile = null;
-let allProfiles = [
-  { id: '1', display_name: 'Awa', age: 22, bio: 'J\'aime voyager ✈️', photo_url: null },
-  { id: '2', display_name: 'Kevin', age: 27, bio: 'Fan de foot ⚽', photo_url: null },
-  { id: '3', display_name: 'Sarah', age: 24, bio: 'Mode + photo 📸', photo_url: null }
-];
+let allProfiles = [];
 let profileIndex = 0;
 let uploadedPhotoFile = null;
 
-// ========== INIT ==========
-function loadConfig() {
-    initApp(); // Lance direct
+// ========== LOAD CONFIG + INIT ==========
+async function loadConfig() {
+    try {
+        const response = await fetch('./config.json');
+        const config = await response.json();
+        supabase = createClient(config.supabase.url, config.supabase.anonKey);
+        await initApp();
+    } catch (err) {
+        console.error('Erreur config.json:', err);
+        alert('config.json manquant. Crée le fichier avec url + anonKey');
+    }
 }
 
-function initApp() {
-    showLogin(); // Démarre sur login
-    attachEventListeners();
+// ========== INITIALISATION ==========
+async function initApp() {
+    const { data: { user } = await supabase.auth.getUser();
 
+    if (user) {
+        currentUser = user;
+        await loadUserProfile();
+        showSwipe();
+        await loadProfiles();
+    } else {
+        showLogin();
+    }
+
+    attachEventListeners();
     document.getElementById('btnSignup').disabled = false;
     document.getElementById('btnLogin').disabled = false;
 }
@@ -59,37 +76,112 @@ function attachEventListeners() {
     });
 }
 
-// ========== AUTH FAKE ==========
-function handleSignup() {
+// ========== AUTH SUPABASE ==========
+async function handleSignup() {
+    const email = document.getElementById('signupEmail').value.trim();
+    const password = document.getElementById('signupPassword').value;
     const name = document.getElementById('signupName').value.trim();
-    if (!name) {
-        showError('errorSignup', 'Mets un nom pour tester');
+    const age = parseInt(document.getElementById('signupAge').value);
+    const bio = document.getElementById('signupBio').value.trim();
+
+    if (!email ||!password ||!name ||!age) {
+        showError('errorSignup', 'Remplis nom, email, mdp, âge');
         return;
     }
-    currentUserProfile.display_name = name;
-    alert('Mode test: Inscription simulée ✅');
-    showSwipe();
-    loadProfiles();
+
+    let photo_url = null;
+    if (uploadedPhotoFile) {
+        const fileExt = uploadedPhotoFile.name.split('.').pop();
+        const fileName = `${Date.now()}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage.from('avatars').upload(fileName, uploadedPhotoFile);
+        if (!uploadError) {
+            const { data } = supabase.storage.from('avatars').getPublicUrl(fileName);
+            photo_url = data.publicUrl;
+        }
+    }
+
+    const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { display_name: name } }
+    });
+
+    if (error) {
+        showError('errorSignup', error.message);
+        return;
+    }
+
+    // Créer profil dans table profiles
+    const { error: profileError } = await supabase.from('profiles').insert({
+        id: data.user.id,
+        display_name: name,
+        age: age,
+        bio: bio,
+        photo_url: photo_url
+    });
+
+    if (profileError) console.error('Erreur profil:', profileError);
+
+    alert('Compte créé! Vérifie tes emails si confirmation activée.');
+    showLogin();
 }
 
-function handleLogin() {
-    alert('Mode test: Connexion simulée ✅');
+async function handleLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+
+    if (!email ||!password) {
+        showError('errorLogin', 'Remplis tout');
+        return;
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+        showError('errorLogin', error.message);
+        return;
+    }
+
+    currentUser = data.user;
+    await loadUserProfile();
     showSwipe();
-    loadProfiles();
+    await loadProfiles();
 }
 
-function handleLogout() {
-    currentMatch = null;
+async function handleLogout() {
+    await supabase.auth.signOut();
+    currentUser = null;
+    currentUserProfile = null;
+    allProfiles = [];
     profileIndex = 0;
     showLogin();
     clearAllInputs();
 }
 
-// ========== PROFILES FAKE ==========
-function loadProfiles() {
+// ========== PROFILS SUPABASE ==========
+async function loadUserProfile() {
+    const { data, error } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+    if (!error) currentUserProfile = data;
+}
+
+async function loadProfiles() {
+    const { data, error } = await supabase
+       .from('profiles')
+       .select('*')
+       .neq('id', currentUser.id)
+       .limit(20);
+
+    if (error) {
+        console.error('Erreur loadProfiles:', error);
+        document.getElementById('cardsContainer').innerHTML = '<div class="empty-message">Erreur chargement profils</div>';
+        return;
+    }
+
+    allProfiles = data || [];
     profileIndex = 0;
+
     if (allProfiles.length === 0) {
-        document.getElementById('cardsContainer').innerHTML = '<div class="empty-message">Aucun profil disponible</div>';
+        document.getElementById('cardsContainer').innerHTML = '<div class="empty-message">Aucun profil disponible pour l\'instant 😢</div>';
     } else {
         renderCard();
     }
@@ -99,7 +191,7 @@ function renderCard() {
     const container = document.getElementById('cardsContainer');
     container.innerHTML = '';
     if (profileIndex >= allProfiles.length) {
-        container.innerHTML = '<div class="empty-message">Plus de profils 😢 Mode test fini</div>';
+        container.innerHTML = '<div class="empty-message">Plus de profils 😢</div>';
         return;
     }
     const profile = allProfiles[profileIndex];
@@ -109,7 +201,7 @@ function renderCard() {
         <img src="${profile.photo_url || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22200%22/%3E%3C/svg%3E'}" class="card-image">
         <div class="card-info">
             <div class="card-name">${profile.display_name}, ${profile.age}</div>
-            <div class="card-bio">${profile.bio}</div>
+            <div class="card-bio">${profile.bio || 'Pas de bio'}</div>
         </div>
     `;
     container.appendChild(card);
@@ -128,40 +220,16 @@ function nextProfile() {
 
 function handleLike() {
     const profile = allProfiles[profileIndex];
-    currentMatch = 'fake-conv-123';
-    currentMatchProfile = profile;
-    alert(`Mode test: Match avec ${profile.display_name} ✅`);
-    showChat();
+    alert(`Like envoyé à ${profile.display_name}. Le chat nécessite l'Edge Function.`);
 }
 
-// ========== CHAT FAKE ==========
+// ========== CHAT - REQUIERT EDGE FUNCTION ==========
 function loadMessages() {
-    const container = document.getElementById('messagesContainer');
-    container.innerHTML = '<div class="message theirs"><div class="message-bubble">Salut! Mode test activé 👋</div></div>';
+    document.getElementById('messagesContainer').innerHTML = '<div class="empty-message">Chat désactivé. Edge Function à réparer.</div>';
 }
 
 function sendMessage() {
-    const input = document.getElementById('chatInput');
-    const message = input.value.trim();
-    if (!message) return;
-    renderMessage({ user_id: currentUser.id, content: message, created_at: new Date() });
-    input.value = '';
-    input.style.height = 'auto';
-}
-
-function renderMessage(message) {
-    const container = document.getElementById('messagesContainer');
-    const messageDiv = document.createElement('div');
-    const isOwn = message.user_id === currentUser.id;
-    messageDiv.className = `message ${isOwn? 'mine' : 'theirs'}`;
-    messageDiv.innerHTML = `
-        <div>
-            <div class="message-bubble">${message.content}</div>
-            <div class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-        </div>
-    `;
-    container.appendChild(messageDiv);
-    container.scrollTop = container.scrollHeight;
+    alert('Chat désactivé tant que get-or-create-dm n\'est pas réparé');
 }
 
 // ========== UI ==========
@@ -182,7 +250,7 @@ function showSwipe() {
 }
 function showChat() {
     showPage('pageChat');
-    document.getElementById('matchName').textContent = `${currentMatchProfile.display_name}, ${currentMatchProfile.age}`;
+    document.getElementById('matchName').textContent = currentMatchProfile? `${currentMatchProfile.display_name}, ${currentMatchProfile.age}` : 'Match';
     loadMessages();
 }
 function showError(elementId, message) {
@@ -192,18 +260,13 @@ function showError(elementId, message) {
     setTimeout(() => element.classList.remove('show'), 3000);
 }
 function clearAllInputs() {
-    document.getElementById('loginEmail').value = '';
-    document.getElementById('loginPassword').value = '';
-    document.getElementById('signupEmail').value = '';
-    document.getElementById('signupPassword').value = '';
-    document.getElementById('signupName').value = '';
-    document.getElementById('signupAge').value = '';
-    document.getElementById('signupBio').value = '';
-    document.getElementById('chatInput').value = '';
+    ['loginEmail','loginPassword','signupEmail','signupPassword','signupName','signupAge','signupBio','chatInput'].forEach(id => {
+        document.getElementById(id).value = '';
+    });
     uploadedPhotoFile = null;
     document.getElementById('photoLabel').textContent = '📸 Ajouter une photo';
     document.getElementById('photoLabel').classList.remove('has-file');
 }
 
-// ========== START APP ==========
+// ========== START ==========
 loadConfig();
