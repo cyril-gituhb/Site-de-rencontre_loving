@@ -1,7 +1,11 @@
 // ========== MODE FULL SUPABASE ==========
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
 
-let supabase;
+// Tes clés direct ici
+const supabaseUrl = 'https://ghcaswgzkzvymkyb.supabase.co'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoY2Fzd2dhZ2hrenZ5dm16a3liIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0MzUzMTUsImV4cCI6MjA5NzAxMTMxNX0.xwuTKMah1y1C2TkAqiKEe288UrfvY8DK_TyLauAKWB4'
+const supabase = createClient(supabaseUrl, supabaseKey)
+
 let currentUser = null;
 let currentUserProfile = null;
 let currentMatch = null;
@@ -10,22 +14,9 @@ let allProfiles = [];
 let profileIndex = 0;
 let uploadedPhotoFile = null;
 
-// ========== LOAD CONFIG + INIT ==========
-async function loadConfig() {
-    try {
-        const response = await fetch('./config.json');
-        const config = await response.json();
-        supabase = createClient(config.supabase.url, config.supabase.anonKey);
-        await initApp();
-    } catch (err) {
-        console.error('Erreur config.json:', err);
-        alert('config.json manquant. Crée le fichier avec url + anonKey');
-    }
-}
-
 // ========== INITIALISATION ==========
 async function initApp() {
-    const { data: { user } = await supabase.auth.getUser();
+    const { data: { user } = await supabase.auth.getUser(); // <-- corrigé ici
 
     if (user) {
         currentUser = user;
@@ -111,7 +102,6 @@ async function handleSignup() {
         return;
     }
 
-    // Créer profil dans table profiles
     const { error: profileError } = await supabase.from('profiles').insert({
         id: data.user.id,
         display_name: name,
@@ -166,10 +156,10 @@ async function loadUserProfile() {
 
 async function loadProfiles() {
     const { data, error } = await supabase
-       .from('profiles')
-       .select('*')
-       .neq('id', currentUser.id)
-       .limit(20);
+      .from('profiles')
+      .select('*')
+      .neq('id', currentUser.id)
+      .limit(20);
 
     if (error) {
         console.error('Erreur loadProfiles:', error);
@@ -269,4 +259,4 @@ function clearAllInputs() {
 }
 
 // ========== START ==========
-loadConfig();
+initApp();
