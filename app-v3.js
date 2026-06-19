@@ -1,262 +1,180 @@
-// ========== MODE FULL SUPABASE ==========
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
-
-// Tes clés direct ici
-const supabaseUrl = 'https://ghcaswgaghkzvyvmzkyb.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoY2Fzd2dhZ2hrenZ5dm16a3liIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0MzUzMTUsImV4cCI6MjA5NzAxMTMxNX0.xwuTKMah1y1C2TkAqiKEe288UrfvY8DK_TyLauAKWB4'
-const supabase = createClient(supabaseUrl, supabaseKey)
-
-let currentUser = null;
-let currentUserProfile = null;
-let currentMatch = null;
-let currentMatchProfile = null;
-let allProfiles = [];
-let profileIndex = 0;
-let uploadedPhotoFile = null;
-
-// ========== INITIALISATION ==========
-async function initApp() {
-    const { data: { user } = await supabase.auth.getUser();
-
-    if (user) {
-        currentUser = user;
-        await loadUserProfile();
-        showSwipe();
-        await loadProfiles();
-    } else {
-        showLogin();
-    }
-
-    attachEventListeners();
-    document.getElementById('btnSignup').disabled = false;
-    document.getElementById('btnLogin').disabled = false;
+// Fonction pour convertir "CD" en 🇨🇩
+function getFlagEmoji(countryCode) {
+  if (!countryCode || countryCode.length!== 2) return '';
+  return countryCode.toUpperCase().split('')
+   .map(char => String.fromCodePoint(127397 + char.charCodeAt()))
+   .join('');
 }
 
-function attachEventListeners() {
-    document.getElementById('photoInput').addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            uploadedPhotoFile = file;
-            document.getElementById('photoLabel').textContent = `📸 ${file.name}`;
-            document.getElementById('photoLabel').classList.add('has-file');
-        }
-    });
+// Récupérer les éléments
+const pageSignup = document.getElementById('pageSignup');
+const pageLogin = document.getElementById('pageLogin');
+const pageSwipe = document.getElementById('pageSwipe');
+const pageChat = document.getElementById('pageChat');
 
-    document.getElementById('btnSignup').addEventListener('click', handleSignup);
-    document.getElementById('btnLogin').addEventListener('click', handleLogin);
-    document.getElementById('btnLogout').addEventListener('click', handleLogout);
-    document.getElementById('btnLike').addEventListener('click', handleLike);
-    document.getElementById('btnPass').addEventListener('click', nextProfile);
-    document.getElementById('btnSendMessage').addEventListener('click', sendMessage);
-    document.getElementById('btnBackToSwipe').addEventListener('click', () => {
-        showSwipe();
-    });
+// Formulaire inscription
+const btnSignup = document.getElementById('btnSignup');
+const signupEmail = document.getElementById('signupEmail');
+const signupPassword = document.getElementById('signupPassword');
+const signupName = document.getElementById('signupName');
+const signupAge = document.getElementById('signupAge');
+const signupCountry = document.getElementById('signupCountry');
+const signupBio = document.getElementById('signupBio');
+const photoInput = document.getElementById('photoInput');
 
-    document.getElementById('linkToLogin').addEventListener('click', (e) => {
-        e.preventDefault();
-        showLogin();
-    });
-    document.getElementById('linkToSignup').addEventListener('click', (e) => {
-        e.preventDefault();
-        showSignup();
-    });
+// Activer bouton si tous champs remplis
+[signupEmail, signupPassword, signupName, signupAge, signupCountry].forEach(input => {
+  input.addEventListener('input', checkSignupForm);
+});
 
-    document.getElementById('chatInput').addEventListener('input', (e) => {
-        e.target.style.height = 'auto';
-        e.target.style.height = Math.min(e.target.scrollHeight, 100) + 'px';
-    });
+function checkSignupForm() {
+  btnSignup.disabled =!(
+    signupEmail.value &&
+    signupPassword.value.length >= 6 &&
+    signupName.value &&
+    signupAge.value >= 18 &&
+    signupCountry.value
+  );
 }
 
-// ========== AUTH SUPABASE ==========
-async function handleSignup() {
-    const email = document.getElementById('signupEmail').value.trim();
-    const password = document.getElementById('signupPassword').value;
-    const name = document.getElementById('signupName').value.trim();
-    const age = parseInt(document.getElementById('signupAge').value);
-    const bio = document.getElementById('signupBio').value.trim();
+// Inscription
+btnSignup.addEventListener('click', () => {
+  const photoFile = photoInput.files[0];
+  const reader = new FileReader();
 
-    if (!email ||!password ||!name ||!age) {
-        showError('errorSignup', 'Remplis nom, email, mdp, âge');
-        return;
-    }
+  reader.onload = function(e) {
+    const user = {
+      id: Date.now(),
+      email: signupEmail.value,
+      password: signupPassword.value,
+      nom: signupName.value,
+      age: signupAge.value,
+      country: signupCountry.value, // <-- pays sauvegardé
+      bio: signupBio.value,
+      photo: e.target.result
+    };
 
-    let photo_url = null;
-    if (uploadedPhotoFile) {
-        const fileExt = uploadedPhotoFile.name.split('.').pop();
-        const fileName = `${Date.now()}.${fileExt}`;
-        const { error: uploadError } = await supabase.storage.from('avatars').upload(fileName, uploadedPhotoFile);
-        if (!uploadError) {
-            const { data } = supabase.storage.from('avatars').getPublicUrl(fileName);
-            photo_url = data.publicUrl;
-        }
-    }
+    // Sauvegarder user dans localStorage
+    localStorage.setItem('currentUser', JSON.stringify(user));
 
-    const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { display_name: name } }
-    });
+    // Ajouter à la liste des users
+    let users = JSON.parse(localStorage.getItem('users') || '[]');
+    users.push(user);
+    localStorage.setItem('users', JSON.stringify(users));
 
-    if (error) {
-        showError('errorSignup', error.message);
-        return;
-    }
+    alert('Inscription réussie!');
+    showPage('swipe');
+    afficherProfil();
+  };
 
-    const { error: profileError } = await supabase.from('profiles').insert({
-        id: data.user.id,
-        display_name: name,
-        age: age,
-        bio: bio,
-        photo_url: photo_url
-    });
+  if (photoFile) {
+    reader.readAsDataURL(photoFile);
+  } else {
+    reader.onload({target: {result: ''}});
+  }
+});
 
-    if (profileError) console.error('Erreur profil:', profileError);
+// Connexion
+const btnLogin = document.getElementById('btnLogin');
+const loginEmail = document.getElementById('loginEmail');
+const loginPassword = document.getElementById('loginPassword');
 
-    alert('Compte créé! Vérifie tes emails si confirmation activée.');
-    showLogin();
+[loginEmail, loginPassword].forEach(input => {
+  input.addEventListener('input', () => {
+    btnLogin.disabled =!(loginEmail.value && loginPassword.value);
+  });
+});
+
+btnLogin.addEventListener('click', () => {
+  const users = JSON.parse(localStorage.getItem('users') || '[]');
+  const user = users.find(u => u.email === loginEmail.value && u.password === loginPassword.value);
+
+  if (user) {
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    showPage('swipe');
+    afficherProfil();
+  } else {
+    document.getElementById('errorLogin').textContent = 'Email ou mot de passe incorrect';
+  }
+});
+
+// Déconnexion
+document.getElementById('btnLogout').addEventListener('click', () => {
+  localStorage.removeItem('currentUser');
+  showPage('login');
+});
+
+// Navigation entre pages
+document.getElementById('linkToSignup').addEventListener('click', (e) => {
+  e.preventDefault();
+  showPage('signup');
+});
+
+document.getElementById('linkToLogin').addEventListener('click', (e) => {
+  e.preventDefault();
+  showPage('login');
+});
+
+function showPage(page) {
+  pageSignup.classList.remove('active');
+  pageLogin.classList.remove('active');
+  pageSwipe.classList.remove('active');
+  pageChat.classList.remove('active');
+
+  if (page === 'signup') pageSignup.classList.add('active');
+  if (page === 'login') pageLogin.classList.add('active');
+  if (page === 'swipe') pageSwipe.classList.add('active');
+  if (page === 'chat') pageChat.classList.add('active');
+
+  document.getElementById('btnLogout').style.display = page === 'swipe' || page === 'chat'? 'block' : 'none';
 }
 
-async function handleLogin() {
-    const email = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value;
-
-    if (!email ||!password) {
-        showError('errorLogin', 'Remplis tout');
-        return;
+// Afficher profil avec drapeau
+function afficherProfil() {
+  const user = JSON.parse(localStorage.getItem('currentUser'));
+  if (user) {
+    // Dans le chat
+    const matchFlag = document.getElementById('matchFlag');
+    const matchNameText = document.getElementById('matchNameText');
+    if (matchFlag && matchNameText) {
+      matchFlag.textContent = getFlagEmoji(user.country);
+      matchNameText.textContent = user.nom;
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-
-    if (error) {
-        showError('errorLogin', error.message);
-        return;
-    }
-
-    currentUser = data.user;
-    await loadUserProfile();
-    showSwipe();
-    await loadProfiles();
+    // Dans les cartes swipe - exemple
+    afficherCartes();
+  }
 }
 
-async function handleLogout() {
-    await supabase.auth.signOut();
-    currentUser = null;
-    currentUserProfile = null;
-    allProfiles = [];
-    profileIndex = 0;
-    showLogin();
-    clearAllInputs();
-}
+// Exemple pour afficher les cartes avec drapeau
+function afficherCartes() {
+  const container = document.getElementById('cardsContainer');
+  const users = JSON.parse(localStorage.getItem('users') || '[]');
+  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
-// ========== PROFILS SUPABASE ==========
-async function loadUserProfile() {
-    const { data, error } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
-    if (!error) currentUserProfile = data;
-}
+  container.innerHTML = '';
 
-async function loadProfiles() {
-    const { data, error } = await supabase
-     .from('profiles')
-     .select('*')
-     .neq('id', currentUser.id)
-     .limit(20);
-
-    if (error) {
-        console.error('Erreur loadProfiles:', error);
-        document.getElementById('cardsContainer').innerHTML = '<div class="empty-message">Erreur chargement profils</div>';
-        return;
-    }
-
-    allProfiles = data || [];
-    profileIndex = 0;
-
-    if (allProfiles.length === 0) {
-        document.getElementById('cardsContainer').innerHTML = '<div class="empty-message">Aucun profil disponible pour l\'instant 😢</div>';
-    } else {
-        renderCard();
-    }
-}
-
-function renderCard() {
-    const container = document.getElementById('cardsContainer');
-    container.innerHTML = '';
-    if (profileIndex >= allProfiles.length) {
-        container.innerHTML = '<div class="empty-message">Plus de profils 😢</div>';
-        return;
-    }
-    const profile = allProfiles[profileIndex];
+  users.filter(u => u.id!== currentUser.id).forEach(user => {
     const card = document.createElement('div');
     card.className = 'card';
     card.innerHTML = `
-        <img src="${profile.photo_url || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22200%22/%3E%3C/svg%3E'}" class="card-image">
-        <div class="card-info">
-            <div class="card-name">${profile.display_name}, ${profile.age}</div>
-            <div class="card-bio">${profile.bio || 'Pas de bio'}</div>
-        </div>
+      <img src="${user.photo}" alt="${user.nom}">
+      <div class="card-info">
+        <h3>${getFlagEmoji(user.country)} ${user.nom}, ${user.age}</h3>
+        <p>${user.bio}</p>
+      </div>
     `;
     container.appendChild(card);
+  });
 }
 
-function nextProfile() {
-    const card = document.querySelector('.card');
-    if (card) {
-        card.classList.add('exit-right');
-        setTimeout(() => {
-            profileIndex++;
-            renderCard();
-        }, 300);
-    }
-}
-
-function handleLike() {
-    const profile = allProfiles[profileIndex];
-    alert(`Like envoyé à ${profile.display_name}. Le chat nécessite l'Edge Function.`);
-}
-
-// ========== CHAT - REQUIERT EDGE FUNCTION ==========
-function loadMessages() {
-    document.getElementById('messagesContainer').innerHTML = '<div class="empty-message">Chat désactivé. Edge Function à réparer.</div>';
-}
-
-function sendMessage() {
-    alert('Chat désactivé tant que get-or-create-dm n\'est pas réparé');
-}
-
-// ========== UI ==========
-function showPage(pageId) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(pageId).classList.add('active');
-}
-function showLogin() {
-    showPage('pageLogin');
-    document.getElementById('btnLogout').style.display = 'none';
-}
-function showSignup() {
-    showPage('pageSignup');
-}
-function showSwipe() {
-    showPage('pageSwipe');
-    document.getElementById('btnLogout').style.display = 'inline-block';
-}
-function showChat() {
-    showPage('pageChat');
-    document.getElementById('matchName').textContent = currentMatchProfile? `${currentMatchProfile.display_name}, ${currentMatchProfile.age}` : 'Match';
-    loadMessages();
-}
-function showError(elementId, message) {
-    const element = document.getElementById(elementId);
-    element.textContent = message;
-    element.classList.add('show');
-    setTimeout(() => element.classList.remove('show'), 3000);
-}
-function clearAllInputs() {
-    ['loginEmail','loginPassword','signupEmail','signupPassword','signupName','signupAge','signupBio','chatInput'].forEach(id => {
-        document.getElementById(id).value = '';
-    });
-    uploadedPhotoFile = null;
-    document.getElementById('photoLabel').textContent = '📸 Ajouter une photo';
-    document.getElementById('photoLabel').classList.remove('has-file');
-}
-
-// ========== START ==========
-initApp();
+// Au chargement
+window.addEventListener('load', () => {
+  const user = localStorage.getItem('currentUser');
+  if (user) {
+    showPage('swipe');
+    afficherProfil();
+  } else {
+    showPage('login');
+  }
+});
