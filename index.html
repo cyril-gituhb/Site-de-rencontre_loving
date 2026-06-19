@@ -11,9 +11,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="style.css">
-    
-    <!-- SUPPRIME cette ligne, on l’importe via app.js maintenant -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> -->
 </head>
 <body>
     <div class="container">
@@ -56,6 +53,68 @@
                 <div class="form-group">
                     <label class="form-label">Âge</label>
                     <input type="number" id="signupAge" class="form-input" placeholder="18" min="18">
+                </div>
+
+                <!-- TOUS LES PAYS AFRICAINS -->
+                <div class="form-group">
+                    <label class="form-label">Pays</label>
+                    <select id="signupCountry" class="form-input" required>
+                        <option value="">-- Choisis ton pays --</option>
+                        <option value="ZA">🇿🇦 Afrique du Sud</option>
+                        <option value="DZ">🇩🇿 Algérie</option>
+                        <option value="AO">🇦🇴 Angola</option>
+                        <option value="BJ">🇧🇯 Bénin</option>
+                        <option value="BW">🇧🇼 Botswana</option>
+                        <option value="BF">🇧🇫 Burkina Faso</option>
+                        <option value="BI">🇧🇮 Burundi</option>
+                        <option value="CM">🇨🇲 Cameroun</option>
+                        <option value="CV">🇨🇻 Cap-Vert</option>
+                        <option value="CF">🇨🇫 République Centrafricaine</option>
+                        <option value="KM">🇰🇲 Comores</option>
+                        <option value="CG">🇨🇬 Congo-Brazzaville</option>
+                        <option value="CD">🇨🇩 République Démocratique du Congo</option>
+                        <option value="CI">🇨🇮 Côte d'Ivoire</option>
+                        <option value="DJ">🇩🇯 Djibouti</option>
+                        <option value="EG">🇪🇬 Égypte</option>
+                        <option value="ER">🇪🇷 Érythrée</option>
+                        <option value="SZ">🇸🇿 Eswatini</option>
+                        <option value="ET">🇪🇹 Éthiopie</option>
+                        <option value="GA">🇬🇦 Gabon</option>
+                        <option value="GM">🇬🇲 Gambie</option>
+                        <option value="GH">🇬🇭 Ghana</option>
+                        <option value="GN">🇬🇳 Guinée</option>
+                        <option value="GW">🇬🇼 Guinée-Bissau</option>
+                        <option value="GQ">🇬🇶 Guinée Équatoriale</option>
+                        <option value="KE">🇰🇪 Kenya</option>
+                        <option value="LS">🇱🇸 Lesotho</option>
+                        <option value="LR">🇱🇷 Liberia</option>
+                        <option value="LY">🇱🇾 Libye</option>
+                        <option value="MG">🇲🇬 Madagascar</option>
+                        <option value="MW">🇲🇼 Malawi</option>
+                        <option value="ML">🇲🇱 Mali</option>
+                        <option value="MA">🇲🇦 Maroc</option>
+                        <option value="MU">🇲🇺 Maurice</option>
+                        <option value="MR">🇲🇷 Mauritanie</option>
+                        <option value="MZ">🇲🇿 Mozambique</option>
+                        <option value="NA">🇳🇦 Namibie</option>
+                        <option value="NE">🇳🇪 Niger</option>
+                        <option value="NG">🇳🇬 Nigeria</option>
+                        <option value="UG">🇺🇬 Ouganda</option>
+                        <option value="RW">🇷🇼 Rwanda</option>
+                        <option value="ST">🇸🇹 Sao Tomé-et-Principe</option>
+                        <option value="SN">🇸🇳 Sénégal</option>
+                        <option value="SC">🇸🇨 Seychelles</option>
+                        <option value="SL">🇸🇱 Sierra Leone</option>
+                        <option value="SO">🇸🇴 Somalie</option>
+                        <option value="SD">🇸🇩 Soudan</option>
+                        <option value="SS">🇸 Soudan du Sud</option>
+                        <option value="TZ">🇹🇿 Tanzanie</option>
+                        <option value="TD">🇹🇩 Tchad</option>
+                        <option value="TG">🇹🇬 Togo</option>
+                        <option value="TN">🇹🇳 Tunisie</option>
+                        <option value="ZM">🇿🇲 Zambie</option>
+                        <option value="ZW">🇿🇼 Zimbabwe</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
@@ -113,7 +172,9 @@
                     <button id="btnBackToSwipe" class="btn-back">←</button>
                     <img id="matchAvatar" class="chat-avatar" src="" alt="Avatar">
                     <div class="chat-header-info">
-                        <div id="matchName" class="chat-name"></div>
+                        <div id="matchName" class="chat-name">
+                            <span id="matchFlag"></span> <span id="matchNameText"></span>
+                        </div>
                     </div>
                 </div>
                 <div id="messagesContainer" class="messages-container"></div>
