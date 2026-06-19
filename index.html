@@ -3,190 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KELVIN LOVING - Site de Rencontre</title>
-    
-    <!-- Police Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <title>DatingApp | Trouvez l'amour</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <!-- HEADER -->
-        <div class="header">
-            <div class="header-title">KELVIN LOVING ❤️</div>
-            <div class="header-actions">
-                <button id="btnLogout" class="btn-logout" style="display: none;">Déconnexion</button>
-            </div>
-        </div>
 
-        <!-- AUTH - SIGNUP PAGE -->
-        <div id="pageSignup" class="page">
-            <div class="auth-container">
-                <h1 class="auth-title">Bienvenue</h1>
-                <div id="errorSignup" class="error-message"></div>
+    <!-- Barre de Navigation (visible si connecté) -->
+    <nav id="main-nav" class="hidden">
+        <button onclick="showView('swipe-view')">🔥</button>
+        <button onclick="showView('matches-view')">💬</button>
+        <button onclick="logout()">Logout</button>
+    </nav>
+
+    <div id="app">
+        <!-- VUE CONNEXION -->
+        <section id="login-view" class="view">
+            <h1>DatingApp</h1>
+            <form id="login-form">
+                <input type="email" id="login-email" placeholder="Email" required>
+                <input type="password" id="login-password" placeholder="Mot de passe" required>
+                <button type="submit" class="btn-primary">Se connecter</button>
+            </form>
+            <p>Pas de compte ? <a href="#" onclick="showView('signup-view')">S'inscrire</a></p>
+        </section>
+
+        <!-- VUE INSCRIPTION -->
+        <section id="signup-view" class="view hidden">
+            <h1>Créer un profil</h1>
+            <form id="signup-form">
+                <input type="text" id="sign-name" placeholder="Prénom" required>
+                <input type="email" id="sign-email" placeholder="Email" required>
+                <input type="password" id="sign-password" placeholder="Mot de passe (min 6)" minlength="6" required>
+                <input type="number" id="sign-age" placeholder="Âge (min 18)" min="18" required>
                 
-                <div class="file-input-wrapper">
-                    <label for="photoInput" class="file-input-label" id="photoLabel">
-                        📸 Ajouter une photo
-                    </label>
-                    <input type="file" id="photoInput" accept="image/*">
-                </div>
+                <select id="sign-country" required>
+                    <option value="">-- Pays --</option>
+                    <option value="FR">France</option>
+                    <option value="CD">RD Congo</option>
+                    <option value="BE">Belgique</option>
+                    <option value="CI">Côte d'Ivoire</option>
+                    <option value="CM">Cameroun</option>
+                    <option value="SN">Sénégal</option>
+                    <option value="CA">Canada</option>
+                </select>
 
-                <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <input type="email" id="signupEmail" class="form-input" placeholder="votre@email.com">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Mot de passe</label>
-                    <input type="password" id="signupPassword" class="form-input" placeholder="Min. 6 caractères">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Prénom</label>
-                    <input type="text" id="signupName" class="form-input" placeholder="Votre prénom">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Âge</label>
-                    <input type="number" id="signupAge" class="form-input" placeholder="18" min="18">
-                </div>
-
-                <!-- TOUS LES PAYS AFRICAINS -->
-                <div class="form-group">
-                    <label class="form-label">Pays</label>
-                    <select id="signupCountry" class="form-input" required>
-                        <option value="">-- Choisis ton pays --</option>
-                        <option value="ZA">🇿🇦 Afrique du Sud</option>
-                        <option value="DZ">🇩🇿 Algérie</option>
-                        <option value="AO">🇦🇴 Angola</option>
-                        <option value="BJ">🇧🇯 Bénin</option>
-                        <option value="BW">🇧🇼 Botswana</option>
-                        <option value="BF">🇧🇫 Burkina Faso</option>
-                        <option value="BI">🇧🇮 Burundi</option>
-                        <option value="CM">🇨🇲 Cameroun</option>
-                        <option value="CV">🇨🇻 Cap-Vert</option>
-                        <option value="CF">🇨🇫 République Centrafricaine</option>
-                        <option value="KM">🇰🇲 Comores</option>
-                        <option value="CG">🇨🇬 Congo-Brazzaville</option>
-                        <option value="CD">🇨🇩 République Démocratique du Congo</option>
-                        <option value="CI">🇨🇮 Côte d'Ivoire</option>
-                        <option value="DJ">🇩🇯 Djibouti</option>
-                        <option value="EG">🇪🇬 Égypte</option>
-                        <option value="ER">🇪🇷 Érythrée</option>
-                        <option value="SZ">🇸🇿 Eswatini</option>
-                        <option value="ET">🇪🇹 Éthiopie</option>
-                        <option value="GA">🇬🇦 Gabon</option>
-                        <option value="GM">🇬🇲 Gambie</option>
-                        <option value="GH">🇬🇭 Ghana</option>
-                        <option value="GN">🇬🇳 Guinée</option>
-                        <option value="GW">🇬🇼 Guinée-Bissau</option>
-                        <option value="GQ">🇬🇶 Guinée Équatoriale</option>
-                        <option value="KE">🇰🇪 Kenya</option>
-                        <option value="LS">🇱🇸 Lesotho</option>
-                        <option value="LR">🇱🇷 Liberia</option>
-                        <option value="LY">🇱🇾 Libye</option>
-                        <option value="MG">🇲🇬 Madagascar</option>
-                        <option value="MW">🇲🇼 Malawi</option>
-                        <option value="ML">🇲🇱 Mali</option>
-                        <option value="MA">🇲🇦 Maroc</option>
-                        <option value="MU">🇲🇺 Maurice</option>
-                        <option value="MR">🇲🇷 Mauritanie</option>
-                        <option value="MZ">🇲🇿 Mozambique</option>
-                        <option value="NA">🇳🇦 Namibie</option>
-                        <option value="NE">🇳🇪 Niger</option>
-                        <option value="NG">🇳🇬 Nigeria</option>
-                        <option value="UG">🇺🇬 Ouganda</option>
-                        <option value="RW">🇷🇼 Rwanda</option>
-                        <option value="ST">🇸🇹 Sao Tomé-et-Principe</option>
-                        <option value="SN">🇸🇳 Sénégal</option>
-                        <option value="SC">🇸🇨 Seychelles</option>
-                        <option value="SL">🇸🇱 Sierra Leone</option>
-                        <option value="SO">🇸🇴 Somalie</option>
-                        <option value="SD">🇸🇩 Soudan</option>
-                        <option value="SS">🇸 Soudan du Sud</option>
-                        <option value="TZ">🇹🇿 Tanzanie</option>
-                        <option value="TD">🇹🇩 Tchad</option>
-                        <option value="TG">🇹🇬 Togo</option>
-                        <option value="TN">🇹🇳 Tunisie</option>
-                        <option value="ZM">🇿🇲 Zambie</option>
-                        <option value="ZW">🇿🇼 Zimbabwe</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Bio</label>
-                    <textarea id="signupBio" class="form-textarea" placeholder="Parlez de vous..."></textarea>
-                </div>
-
-                <button id="btnSignup" class="btn-primary" disabled>S'inscrire</button>
+                <textarea id="sign-bio" placeholder="Bio..." maxlength="150"></textarea>
                 
-                <div class="auth-toggle">
-                    Déjà inscrit ? <a href="#" id="linkToLogin">Se connecter</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- AUTH - LOGIN PAGE -->
-        <div id="pageLogin" class="page active">
-            <div class="auth-container">
-                <h1 class="auth-title">Connexion</h1>
-                <div id="errorLogin" class="error-message"></div>
-
-                <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <input type="email" id="loginEmail" class="form-input" placeholder="votre@email.com">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Mot de passe</label>
-                    <input type="password" id="loginPassword" class="form-input" placeholder="Votre mot de passe">
-                </div>
-
-                <button id="btnLogin" class="btn-primary" disabled>Se connecter</button>
+                <label>Photo de profil :</label>
+                <input type="file" id="sign-photo" accept="image/*">
                 
-                <div class="auth-toggle">
-                    Pas encore inscrit ? <a href="#" id="linkToSignup">S'inscrire</a>
-                </div>
-            </div>
-        </div>
+                <button type="submit" class="btn-primary">Créer mon compte</button>
+            </form>
+            <p>Déjà inscrit ? <a href="#" onclick="showView('login-view')">Connexion</a></p>
+        </section>
 
-        <!-- SWIPE PAGE -->
-        <div id="pageSwipe" class="page">
-            <div class="swipe-container">
-                <div id="cardsContainer"></div>
-                <div class="swipe-buttons">
-                    <button id="btnPass" class="btn-action btn-pass">✖️</button>
-                    <button id="btnLike" class="btn-action btn-like">❤️</button>
-                </div>
+        <!-- VUE SWIPE -->
+        <section id="swipe-view" class="view hidden">
+            <div id="card-container">
+                <!-- La carte s'affichera ici via JS -->
             </div>
-        </div>
+            <div class="swipe-actions">
+                <button onclick="handleAction('pass')" class="btn-pass">❌</button>
+                <button onclick="handleAction('like')" class="btn-like">❤️</button>
+            </div>
+        </section>
 
-        <!-- CHAT PAGE -->
-        <div id="pageChat" class="page">
-            <div class="chat-container">
-                <div class="chat-header">
-                    <button id="btnBackToSwipe" class="btn-back">←</button>
-                    <img id="matchAvatar" class="chat-avatar" src="" alt="Avatar">
-                    <div class="chat-header-info">
-                        <div id="matchName" class="chat-name">
-                            <span id="matchFlag"></span> <span id="matchNameText"></span>
-                        </div>
-                    </div>
-                </div>
-                <div id="messagesContainer" class="messages-container"></div>
-                <div class="chat-input-container">
-                    <textarea id="chatInput" class="chat-input" placeholder="Votre message..." rows="1"></textarea>
-                    <button id="btnSendMessage" class="btn-send">📤</button>
-                </div>
+        <!-- VUE LISTE MATCHES -->
+        <section id="matches-view" class="view hidden">
+            <h2>Mes Matchs</h2>
+            <div id="matches-list"></div>
+        </section>
+
+        <!-- VUE CHAT -->
+        <section id="chat-view" class="view hidden">
+            <div id="chat-header">
+                <button onclick="showView('matches-view')">⬅️</button>
+                <div id="chat-user-info"></div>
             </div>
+            <div id="chat-messages"></div>
+            <div id="chat-input-area">
+                <input type="text" id="msg-input" placeholder="Écrire un message...">
+                <button onclick="sendMessage()">Envoyer</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- MODAL MATCH -->
+    <div id="match-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>🎉 C'EST UN MATCH !</h2>
+            <div id="match-announcement"></div>
+            <button onclick="closeMatchModal()" class="btn-primary">Continuer</button>
         </div>
     </div>
 
-    <!-- SCRIPT MODULE -->
-    <script type="module" src="app-v3.js"></script>
+    <script src="app-v3.js"></script>
 </body>
 </html>
