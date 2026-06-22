@@ -1,75 +1,91 @@
-/* --- VARIABLES ET THÈME KELVIN LOVING --- */
+/* --- VARIABLES THÈME KELVIN LOVING 🏖️ --- */
 :root {
     --primary: #0077b6;      /* Bleu Mer */
     --secondary: #00b4d8;    /* Bleu Ciel */
-    --sable: #fefae0;        /* Couleur Sable */
-    --soleil: #ffb703;       /* Jaune Soleil */
-    --girl: #ff4d6d;         /* Rose pour les filles */
-    --boy: #0077b6;          /* Bleu pour les garçons */
-    --bg-light: #f0f9ff;
+    --sable: #fefae0;        /* Sable */
+    --soleil: #ffb703;       /* Jaune */
+    --girl: #ff4d6d;         /* Rose */
+    --boy: #0077b6;          /* Bleu */
+    --whatsapp-bg: #e5ddd5;  /* Fond Chat WhatsApp */
     --white: #ffffff;
-    --shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
-/* --- RESET ET BASE --- */
+/* --- RESET COMPLET --- */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
 }
 
-body {
-    background: linear-gradient(180deg, #90e0ef 0%, #fefae0 100%);
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #333;
-}
-
-/* --- CONTENEUR MOBILE (L'APPLI) --- */
-#app {
+html, body {
+    height: 100%;
     width: 100%;
-    max-width: 420px;
-    height: 92vh;
-    background: var(--white);
-    border-radius: 25px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    overflow: hidden; /* Empêche le défilement inutile de la page entière */
+    background-color: #90e0ef; /* Couleur de fond hors application */
+}
+
+/* --- CONTENEUR PRINCIPAL (PLEIN ÉCRAN SUR MOBILE) --- */
+#app {
+    width: 100vw;
+    height: 100vh;
+    background: white;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
     position: relative;
-    border: 4px solid var(--white);
 }
 
-/* --- NAVIGATION --- */
+/* --- ADAPTATION POUR ORDINATEUR (TABLETTE/PC) --- */
+@media (min-width: 600px) {
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #0077b6, #90e0ef);
+    }
+    #app {
+        width: 400px;
+        height: 85vh;
+        border-radius: 20px;
+        box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+        border: 5px solid #333; /* Effet bordure de téléphone */
+    }
+}
+
+/* --- BARRE DE NAVIGATION (HORIZONTALE) --- */
 nav {
     background: var(--primary);
-    padding: 15px;
+    color: white;
+    padding: 12px 15px;
     display: flex;
+    flex-direction: row; /* Aligne le logo et les liens horizontalement */
     justify-content: space-between;
     align-items: center;
-    color: white;
-    z-index: 10;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 100;
 }
 
-nav .logo {
+.logo {
     font-weight: bold;
-    font-size: 1.1rem;
-    letter-spacing: 1px;
+    font-size: 1rem;
+    white-space: nowrap;
+}
+
+.nav-links {
+    display: flex;
+    gap: 8px; /* Espace entre les boutons */
 }
 
 .nav-links button {
     background: rgba(255, 255, 255, 0.2);
     border: none;
     color: white;
-    padding: 6px 10px;
-    border-radius: 8px;
+    padding: 7px 12px;
+    border-radius: 20px;
     cursor: pointer;
-    font-size: 0.8rem;
-    margin-left: 5px;
+    font-size: 0.75rem;
     transition: 0.3s;
+    font-weight: 500;
 }
 
 .nav-links button:hover {
@@ -77,109 +93,77 @@ nav .logo {
     color: #333;
 }
 
-/* --- VUES --- */
+/* --- VUES (DÉFILEMENT INTERNE) --- */
 .view {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 20px;
     overflow-y: auto;
-    background: var(--bg-light);
+    padding: 15px;
+    background: #f8f9fa;
 }
 
 .hidden { display: none !important; }
 
-h2, h3 {
-    margin-bottom: 20px;
-    color: var(--primary);
-    text-align: center;
-}
-
 /* --- FORMULAIRES --- */
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
+form { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
 input, select, textarea {
-    width: 100%;
     padding: 14px;
     border: 1px solid #ddd;
-    border-radius: 12px;
+    border-radius: 10px;
     font-size: 1rem;
-    outline: none;
-    transition: 0.3s;
-}
-
-input:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 5px rgba(0,119,182,0.3);
+    background: white;
 }
 
 .btn-main {
-    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    background: var(--primary);
     color: white;
     border: none;
     padding: 15px;
-    border-radius: 12px;
+    border-radius: 10px;
     font-weight: bold;
-    font-size: 1rem;
     cursor: pointer;
-    box-shadow: var(--shadow);
-    transition: 0.3s;
+    margin-top: 10px;
 }
 
-.btn-main:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.1);
-}
-
-/* --- CARTES (GROUPES ET USERS) --- */
+/* --- CARTES (GROUPES / EN LIGNE) --- */
 .group-card, .user-card {
     background: white;
     padding: 15px;
     border-radius: 15px;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: var(--shadow);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
 }
 
-.group-info strong, .user-info strong {
-    font-size: 1.05rem;
-    display: block;
-}
+.group-info strong { font-size: 1rem; color: var(--primary); }
 
 .tag {
     font-size: 0.7rem;
-    padding: 2px 8px;
-    border-radius: 20px;
+    padding: 3px 8px;
+    border-radius: 10px;
     color: white;
-    text-transform: uppercase;
     font-weight: bold;
 }
-
 .tag.M { background: var(--boy); }
 .tag.F { background: var(--girl); }
 
-.user-card img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid var(--secondary);
+/* --- SYSTÈME DE CHAT (STYLE WHATSAPP) --- */
+#chat-view {
+    padding: 0;
+    background-color: var(--whatsapp-bg);
 }
 
-/* --- CHAT AREA --- */
 #chat-header {
-    background: white;
+    background: #fff;
     padding: 10px 15px;
     display: flex;
     align-items: center;
-    gap: 15px;
-    border-bottom: 1px solid #eee;
+    gap: 10px;
+    border-bottom: 1px solid #ddd;
 }
 
 #chat-messages {
@@ -187,71 +171,75 @@ input:focus {
     padding: 15px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     overflow-y: auto;
-    background: #fdfdfd;
+    /* Image de fond style WhatsApp */
+    background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
 }
 
 .msg {
     max-width: 80%;
-    padding: 10px 15px;
-    border-radius: 18px;
+    padding: 10px 14px;
+    border-radius: 15px;
     font-size: 0.95rem;
-    position: relative;
     line-height: 1.4;
-}
-
-.msg small {
-    font-size: 0.7rem;
-    opacity: 0.7;
-    display: block;
-    margin-bottom: 3px;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .msg.me {
     align-self: flex-end;
-    background: var(--primary);
-    color: white;
-    border-bottom-right-radius: 2px;
+    background: #dcf8c6; /* Vert WhatsApp */
+    border-top-right-radius: 0;
 }
 
 .msg.other {
     align-self: flex-start;
-    background: #e9ecef;
-    color: #333;
-    border-bottom-left-radius: 2px;
+    background: white;
+    border-top-left-radius: 0;
 }
 
-/* --- CONTROLES DU CHAT --- */
+.msg small {
+    display: block;
+    font-size: 0.7rem;
+    color: #777;
+    margin-bottom: 2px;
+    font-weight: bold;
+}
+
+/* --- BARRE DE SAISIE EN BAS --- */
 #chat-controls {
-    padding: 15px;
-    background: white;
+    background: #f0f0f0;
+    padding: 10px 15px;
     display: flex;
-    gap: 10px;
     align-items: center;
-    border-top: 1px solid #eee;
+    gap: 10px;
 }
 
 #chat-controls input {
     flex: 1;
-    padding: 12px;
-    background: #f1f3f5;
+    padding: 12px 18px;
+    border-radius: 25px;
     border: none;
+    outline: none;
 }
 
-#btn-voice {
-    background: #f1f3f5;
+#btn-voice, #btn-send {
+    background: var(--primary);
+    color: white;
     border: none;
     width: 45px;
     height: 45px;
     border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
     font-size: 1.2rem;
 }
 
 #btn-voice.recording {
-    background: var(--girl);
-    color: white;
+    background: red;
     animation: pulse 1s infinite;
 }
 
@@ -260,8 +248,3 @@ input:focus {
     50% { transform: scale(1.1); }
     100% { transform: scale(1); }
 }
-
-/* --- SCROLLBAR --- */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
