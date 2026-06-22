@@ -1,133 +1,121 @@
 :root {
-    --primary: #0077b6;
-    --whatsapp-bg: #e5ddd5;
-    --white: #ffffff;
+    --primary: #ff4b2b;
+    --secondary: #2c3e50;
+    --accent: #00d2ff;
+    --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-
-html, body { height: 100%; width: 100%; overflow: hidden; background: #90e0ef; }
-
-#app {
-    width: 100vw;
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-gradient);
     height: 100vh;
     display: flex;
-    flex-direction: column;
-    background: white;
-}
-
-/* --- NAVIGATION (Boutons alignés) --- */
-nav {
-    background: var(--primary);
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    min-height: 70px;
-}
-
-.logo { color: white; font-weight: bold; font-size: 0.9rem; flex: 1; }
-
-.nav-links { display: flex; gap: 5px; flex: 2; justify-content: flex-end; }
-
-.nav-links button {
-    background: rgba(255,255,255,0.2);
-    border: 1px solid white;
-    color: white;
-    padding: 8px 6px;
-    border-radius: 8px;
-    font-size: 11px;
-    cursor: pointer;
-    white-space: nowrap; /* Empêche le texte de se couper */
-}
-
-/* --- VUES --- */
-.view {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden; /* Important pour le chat */
-    position: relative;
 }
 
 .hidden { display: none !important; }
 
-/* --- STYLE DU CHAT WHATSAPP --- */
-#chat-view { background-color: var(--whatsapp-bg); }
-
-#chat-header {
+/* Formulaire en forme de Cœur */
+.heart-container {
+    width: 500px;
+    height: 450px;
     background: white;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-bottom: 1px solid #ddd;
-}
-
-.btn-back {
-    background: none; border: none; font-size: 20px; cursor: pointer;
-}
-
-#chat-messages {
-    flex: 1; /* Prend tout l'espace entre le header et les contrôles */
-    overflow-y: auto;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
-}
-
-/* Bulles de messages */
-.msg {
-    max-width: 80%; padding: 8px 12px; border-radius: 12px; font-size: 14px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-}
-.msg.me { align-self: flex-end; background: #dcf8c6; border-top-right-radius: 0; }
-.msg.other { align-self: flex-start; background: white; border-top-left-radius: 0; }
-
-/* --- BARRE DE SAISIE (FIXÉE EN BAS) --- */
-#chat-controls {
-    background: #f0f0f0;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-height: 60px;
-}
-
-#msg-input {
-    flex: 1;
-    padding: 12px;
-    border-radius: 20px;
-    border: none;
-    outline: none;
-    font-size: 14px;
-}
-
-#btn-voice, #btn-send {
-    background: var(--primary);
-    color: white;
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+    position: relative;
+    clip-path: path("M250,450 C250,450 0,300 0,150 A125,125 0 0,1 250,150 A125,125 0 0,1 500,150 C500,300 250,450 250,450 Z");
     display: flex;
     justify-content: center;
     align-items: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    padding: 40px;
+}
+
+#register-form {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    margin-top: -50px; /* Ajustement pour le centrage dans le cœur */
+}
+
+#register-form h1 { color: var(--primary); font-size: 1.5rem; text-align: center; margin-bottom: 5px; }
+#register-form p { text-align: center; font-size: 0.8rem; margin-bottom: 15px; }
+
+input, select {
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    outline: none;
+}
+
+button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 25px;
     cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+    transition: 0.3s;
 }
 
-#btn-voice.recording { background: red; animation: pulse 1s infinite; }
-
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
+/* Interface Chat 3D Style WhatsApp */
+#chat-section {
+    width: 90%;
+    height: 90vh;
+    background: white;
+    border-radius: 20px;
+    display: flex;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    overflow: hidden;
 }
 
-/* Adaptation Ordinateur */
-@media (min-width: 600px) {
-    body { display: flex; justify-content: center; align-items: center; }
-    #app { width: 400px; height: 90vh; border-radius: 20px; border: 4px solid #333; }
+.sidebar { width: 300px; background: #f8f9fa; border-right: 1px solid #eee; }
+
+.chat-window { flex: 1; display: flex; flex-direction: column; }
+
+.chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    /* L'IMAGE QUE TU AS FOURNIE */
+    background-image: url('ton-image.jpg'); 
+    background-size: cover;
+    background-position: center;
+    background-blend-mode: overlay;
+    background-color: rgba(255, 255, 255, 0.85); /* Rend l'image moins visible (transparente) */
 }
+
+/* Bulles de message 3D */
+.message {
+    max-width: 70%;
+    padding: 12px 18px;
+    margin: 10px 0;
+    border-radius: 15px;
+    box-shadow: 2px 4px 10px rgba(0,0,0,0.05);
+    position: relative;
+}
+
+.received {
+    background: white;
+    align-self: flex-start;
+    border-bottom-left-radius: 2px;
+}
+
+.sent {
+    background: #dcf8c6;
+    align-self: flex-end;
+    border-bottom-right-radius: 2px;
+}
+
+.chat-input-area {
+    padding: 15px;
+    background: #f0f2f5;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chat-input-area input { flex: 1; }
