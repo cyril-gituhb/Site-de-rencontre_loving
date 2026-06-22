@@ -1,250 +1,133 @@
-/* --- VARIABLES THÈME KELVIN LOVING 🏖️ --- */
 :root {
-    --primary: #0077b6;      /* Bleu Mer */
-    --secondary: #00b4d8;    /* Bleu Ciel */
-    --sable: #fefae0;        /* Sable */
-    --soleil: #ffb703;       /* Jaune */
-    --girl: #ff4d6d;         /* Rose */
-    --boy: #0077b6;          /* Bleu */
-    --whatsapp-bg: #e5ddd5;  /* Fond Chat WhatsApp */
+    --primary: #0077b6;
+    --whatsapp-bg: #e5ddd5;
     --white: #ffffff;
 }
 
-/* --- RESET COMPLET --- */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
 
-html, body {
-    height: 100%;
-    width: 100%;
-    overflow: hidden; /* Empêche le défilement inutile de la page entière */
-    background-color: #90e0ef; /* Couleur de fond hors application */
-}
+html, body { height: 100%; width: 100%; overflow: hidden; background: #90e0ef; }
 
-/* --- CONTENEUR PRINCIPAL (PLEIN ÉCRAN SUR MOBILE) --- */
 #app {
     width: 100vw;
     height: 100vh;
-    background: white;
     display: flex;
     flex-direction: column;
-    position: relative;
+    background: white;
 }
 
-/* --- ADAPTATION POUR ORDINATEUR (TABLETTE/PC) --- */
-@media (min-width: 600px) {
-    body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: linear-gradient(135deg, #0077b6, #90e0ef);
-    }
-    #app {
-        width: 400px;
-        height: 85vh;
-        border-radius: 20px;
-        box-shadow: 0 15px 50px rgba(0,0,0,0.3);
-        border: 5px solid #333; /* Effet bordure de téléphone */
-    }
-}
-
-/* --- BARRE DE NAVIGATION (HORIZONTALE) --- */
+/* --- NAVIGATION (Boutons alignés) --- */
 nav {
     background: var(--primary);
-    color: white;
-    padding: 12px 15px;
+    padding: 10px;
     display: flex;
-    flex-direction: row; /* Aligne le logo et les liens horizontalement */
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    z-index: 100;
+    min-height: 70px;
 }
 
-.logo {
-    font-weight: bold;
-    font-size: 1rem;
-    white-space: nowrap;
-}
+.logo { color: white; font-weight: bold; font-size: 0.9rem; flex: 1; }
 
-.nav-links {
-    display: flex;
-    gap: 8px; /* Espace entre les boutons */
-}
+.nav-links { display: flex; gap: 5px; flex: 2; justify-content: flex-end; }
 
 .nav-links button {
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid white;
     color: white;
-    padding: 7px 12px;
-    border-radius: 20px;
+    padding: 8px 6px;
+    border-radius: 8px;
+    font-size: 11px;
     cursor: pointer;
-    font-size: 0.75rem;
-    transition: 0.3s;
-    font-weight: 500;
+    white-space: nowrap; /* Empêche le texte de se couper */
 }
 
-.nav-links button:hover {
-    background: var(--soleil);
-    color: #333;
-}
-
-/* --- VUES (DÉFILEMENT INTERNE) --- */
+/* --- VUES --- */
 .view {
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
-    padding: 15px;
-    background: #f8f9fa;
+    overflow: hidden; /* Important pour le chat */
+    position: relative;
 }
 
 .hidden { display: none !important; }
 
-/* --- FORMULAIRES --- */
-form { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
-input, select, textarea {
-    padding: 14px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    font-size: 1rem;
-    background: white;
-}
-
-.btn-main {
-    background: var(--primary);
-    color: white;
-    border: none;
-    padding: 15px;
-    border-radius: 10px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-/* --- CARTES (GROUPES / EN LIGNE) --- */
-.group-card, .user-card {
-    background: white;
-    padding: 15px;
-    border-radius: 15px;
-    margin-bottom: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    border: 1px solid #eee;
-}
-
-.group-info strong { font-size: 1rem; color: var(--primary); }
-
-.tag {
-    font-size: 0.7rem;
-    padding: 3px 8px;
-    border-radius: 10px;
-    color: white;
-    font-weight: bold;
-}
-.tag.M { background: var(--boy); }
-.tag.F { background: var(--girl); }
-
-/* --- SYSTÈME DE CHAT (STYLE WHATSAPP) --- */
-#chat-view {
-    padding: 0;
-    background-color: var(--whatsapp-bg);
-}
+/* --- STYLE DU CHAT WHATSAPP --- */
+#chat-view { background-color: var(--whatsapp-bg); }
 
 #chat-header {
-    background: #fff;
-    padding: 10px 15px;
+    background: white;
+    padding: 10px;
     display: flex;
     align-items: center;
     gap: 10px;
     border-bottom: 1px solid #ddd;
 }
 
+.btn-back {
+    background: none; border: none; font-size: 20px; cursor: pointer;
+}
+
 #chat-messages {
-    flex: 1;
+    flex: 1; /* Prend tout l'espace entre le header et les contrôles */
+    overflow-y: auto;
     padding: 15px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    overflow-y: auto;
-    /* Image de fond style WhatsApp */
+    gap: 8px;
     background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
 }
 
+/* Bulles de messages */
 .msg {
-    max-width: 80%;
-    padding: 10px 14px;
-    border-radius: 15px;
-    font-size: 0.95rem;
-    line-height: 1.4;
-    position: relative;
+    max-width: 80%; padding: 8px 12px; border-radius: 12px; font-size: 14px;
     box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
+.msg.me { align-self: flex-end; background: #dcf8c6; border-top-right-radius: 0; }
+.msg.other { align-self: flex-start; background: white; border-top-left-radius: 0; }
 
-.msg.me {
-    align-self: flex-end;
-    background: #dcf8c6; /* Vert WhatsApp */
-    border-top-right-radius: 0;
-}
-
-.msg.other {
-    align-self: flex-start;
-    background: white;
-    border-top-left-radius: 0;
-}
-
-.msg small {
-    display: block;
-    font-size: 0.7rem;
-    color: #777;
-    margin-bottom: 2px;
-    font-weight: bold;
-}
-
-/* --- BARRE DE SAISIE EN BAS --- */
+/* --- BARRE DE SAISIE (FIXÉE EN BAS) --- */
 #chat-controls {
     background: #f0f0f0;
-    padding: 10px 15px;
+    padding: 10px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
+    min-height: 60px;
 }
 
-#chat-controls input {
+#msg-input {
     flex: 1;
-    padding: 12px 18px;
-    border-radius: 25px;
+    padding: 12px;
+    border-radius: 20px;
     border: none;
     outline: none;
+    font-size: 14px;
 }
 
 #btn-voice, #btn-send {
     background: var(--primary);
     color: white;
     border: none;
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    font-size: 1.2rem;
 }
 
-#btn-voice.recording {
-    background: red;
-    animation: pulse 1s infinite;
-}
+#btn-voice.recording { background: red; animation: pulse 1s infinite; }
 
 @keyframes pulse {
     0% { transform: scale(1); }
     50% { transform: scale(1.1); }
     100% { transform: scale(1); }
+}
+
+/* Adaptation Ordinateur */
+@media (min-width: 600px) {
+    body { display: flex; justify-content: center; align-items: center; }
+    #app { width: 400px; height: 90vh; border-radius: 20px; border: 4px solid #333; }
 }
