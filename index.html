@@ -2,89 +2,74 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>KELVIN LOVING 🏖️ | Student Dating</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelvin Loving 🏖️</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
 
-    <div id="app">
-        <!-- BARRE DE NAVIGATION (Placée à l'intérieur pour le plein écran) -->
-        <nav id="nav-bar" class="hidden">
-            <div class="logo">KELVIN LOVING 🏖️</div>
-            <div class="nav-links">
-                <button onclick="showView('groups-view')">👥 Groupes</button>
-                <button onclick="showView('online-view')">🟢 En ligne</button>
-                <button onclick="logout()" class="btn-logout">Déconnexion</button>
-            </div>
-        </nav>
-
-        <!-- VUE INSCRIPTION -->
-        <section id="signup-view" class="view">
-            <h2>Rejoindre l'Amphi 🏖️</h2>
-            <form id="signup-form">
-                <input type="text" id="s-name" placeholder="Nom complet" required>
-                <input type="email" id="s-email" placeholder="Email étudiant" required>
-                <input type="tel" id="s-phone" placeholder="Numéro de téléphone" required>
-                <select id="s-sex" required>
-                    <option value="">Sexe</option>
-                    <option value="M">Garçon</option>
-                    <option value="F">Fille</option>
-                </select>
-                <input type="password" id="s-pass" placeholder="Mot de passe" minlength="6" required>
-                <div class="photo-input">
-                    <label>Photo de profil :</label>
-                    <input type="file" id="s-photo" accept="image/*">
+    <!-- Section Inscription -->
+    <section id="auth-section">
+        <div class="heart-container">
+            <form id="register-form">
+                <h1>Kelvin Loving</h1>
+                <p>L'amour étudiant 🏖️</p>
+                
+                <input type="text" placeholder="Nom complet" required>
+                <input type="email" placeholder="Email universitaire" required>
+                <input type="tel" placeholder="Numéro de téléphone" required>
+                
+                <div class="row">
+                    <select id="gender" required>
+                        <option value="">Sexe</option>
+                        <option value="F">Fille</option>
+                        <option value="M">Garçon</option>
+                    </select>
+                    <input type="file" id="photo" accept="image/*">
                 </div>
-                <button type="submit" class="btn-main">S'inscrire</button>
+
+                <input type="password" placeholder="Mot de passe" required>
+                <button type="submit">Rejoindre l'aventure</button>
             </form>
-            <p class="toggle-auth" onclick="showView('login-view')">Déjà inscrit ? <span>Connexion</span></p>
-        </section>
+        </div>
+    </section>
 
-        <!-- VUE CONNEXION -->
-        <section id="login-view" class="view hidden">
-            <h2>Connexion</h2>
-            <form id="login-form">
-                <input type="email" id="l-email" placeholder="Email" required>
-                <input type="password" id="l-pass" placeholder="Mot de passe" required>
-                <button type="submit" class="btn-main">Entrer</button>
-            </form>
-            <p class="toggle-auth" onclick="showView('signup-view')">Retour à l'inscription</p>
-        </section>
+    <!-- Section Chat (Masquée par défaut) -->
+    <section id="chat-section" class="hidden">
+        <div class="sidebar">
+            <div class="user-profile">
+                <img src="https://via.placeholder.com/50" id="my-avatar">
+                <span id="my-name">Étudiant</span>
+            </div>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('groups')">Groupes (10)</button>
+                <button class="tab-btn" onclick="showTab('private')">Privé</button>
+            </div>
+            <div id="list-container">
+                <!-- Groupes ou Utilisateurs en ligne chargés ici via JS -->
+            </div>
+        </div>
 
-        <!-- LISTE DES GROUPES -->
-        <section id="groups-view" class="view hidden">
-            <h3 class="view-title">Groupes de Discussion</h3>
-            <div id="groups-list"></div>
-        </section>
-
-        <!-- ETUDIANTS EN LIGNE -->
-        <section id="online-view" class="view hidden">
-            <h3 class="view-title">Étudiants en ligne</h3>
-            <div id="online-list"></div>
-        </section>
-
-        <!-- VUE CHAT TYPE WHATSAPP -->
-        <section id="chat-view" class="view hidden">
-            <div id="chat-header">
-                <button onclick="leaveChat()" class="btn-back">⬅️</button>
-                <div class="chat-info">
-                    <strong id="chat-title">Chargement...</strong>
-                </div>
+        <div class="chat-window">
+            <div class="chat-header">
+                <span id="chat-title">Groupe Alpha (5F/5G)</span>
+                <span id="status-indicator">● En ligne</span>
+            </div>
+            
+            <div class="chat-messages" id="chat-box">
+                <!-- L'image de fond sera mise ici via CSS -->
+                <div class="message received">Bienvenue sur Kelvin Loving ! 👋</div>
             </div>
 
-            <div id="chat-messages">
-                <!-- Les messages s'affichent ici -->
+            <div class="chat-input-area">
+                <button class="icon-btn"><i class="fas fa-microphone"></i></button>
+                <input type="text" placeholder="Écrivez votre message...">
+                <button class="send-btn"><i class="fas fa-paper-plane"></i></button>
             </div>
+        </div>
+    </section>
 
-            <div id="chat-controls">
-                <input type="text" id="msg-input" placeholder="Écrire un message...">
-                <button id="btn-voice">🎤</button>
-                <button id="btn-send" onclick="sendMessage()">🚀</button>
-            </div>
-        </section>
-    </div>
-
-    <script src="app-v3.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
