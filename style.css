@@ -1,121 +1,161 @@
 :root {
-    --primary: #ff4b2b;
-    --secondary: #2c3e50;
-    --accent: #00d2ff;
-    --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    --primary: #ff3860;
+    --secondary: #3b5998;
+    --bg-chat: rgba(255, 255, 255, 0.9);
 }
 
 body {
     margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: var(--bg-gradient);
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #fce4ec 0%, #ffebee 100%);
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 }
 
 .hidden { display: none !important; }
 
-/* Formulaire en forme de Cœur */
-.heart-container {
-    width: 500px;
-    height: 450px;
-    background: white;
+/* TITRE AU DESSUS */
+.main-title {
+    color: var(--primary);
+    font-size: 3rem;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 800;
+}
+
+/* LE COEUR */
+.heart-wrapper {
     position: relative;
-    clip-path: path("M250,450 C250,450 0,300 0,150 A125,125 0 0,1 250,150 A125,125 0 0,1 500,150 C500,300 250,450 250,450 Z");
+    width: 450px;
+    height: 400px;
+}
+
+.heart-shape {
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    box-shadow: 0 15px 35px rgba(255, 56, 96, 0.2);
+    /* Forme de coeur précise */
+    clip-path: path("M225,400 C225,400 0,280 0,140 A100,100 0 0,1 225,140 A100,100 0 0,1 450,140 C450,280 225,400 225,400 Z");
     display: flex;
     justify-content: center;
-    align-items: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    padding: 40px;
 }
 
-#register-form {
+.form-content {
+    width: 70%;
+    margin-top: 100px; /* Aligné pour entrer dans les arrondis du coeur */
     display: flex;
     flex-direction: column;
-    width: 70%;
-    margin-top: -50px; /* Ajustement pour le centrage dans le cœur */
+    gap: 10px;
 }
 
-#register-form h1 { color: var(--primary); font-size: 1.5rem; text-align: center; margin-bottom: 5px; }
-#register-form p { text-align: center; font-size: 0.8rem; margin-bottom: 15px; }
-
-input, select {
+.form-content input, .form-content select {
     padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ddd;
-    border-radius: 20px;
+    border-radius: 10px;
+    border: 1px solid #eee;
     outline: none;
+    font-size: 0.9rem;
 }
 
-button {
+.row { display: flex; gap: 5px; }
+
+.custom-file-upload {
+    background: #eee;
+    padding: 10px;
+    font-size: 0.8rem;
+    border-radius: 10px;
+    cursor: pointer;
+    flex: 1;
+    text-align: center;
+}
+
+#reg-photo { display: none; }
+
+#btn-rejoindre {
     background: var(--primary);
     color: white;
     border: none;
     padding: 12px;
-    border-radius: 25px;
-    cursor: pointer;
-    font-weight: bold;
-    margin-top: 10px;
-    transition: 0.3s;
-}
-
-/* Interface Chat 3D Style WhatsApp */
-#chat-section {
-    width: 90%;
-    height: 90vh;
-    background: white;
     border-radius: 20px;
-    display: flex;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-    overflow: hidden;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(255, 56, 96, 0.4);
+    transition: 0.3s;
+    margin-top: 5px;
 }
 
-.sidebar { width: 300px; background: #f8f9fa; border-right: 1px solid #eee; }
+#btn-rejoindre:hover { transform: scale(1.05); }
 
-.chat-window { flex: 1; display: flex; flex-direction: column; }
+/* INTERFACE CHAT 3D */
+.app-container {
+    width: 95vw;
+    height: 90vh;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    display: flex;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.1);
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.5);
+}
 
-.chat-messages {
+.sidebar { width: 300px; background: rgba(255,255,255,0.5); border-right: 1px solid rgba(0,0,0,0.05); }
+
+.my-profile { padding: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #eee; }
+.my-profile img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
+
+.tabs { display: flex; padding: 10px; gap: 5px; }
+.tab-btn { flex: 1; padding: 8px; border: none; border-radius: 10px; cursor: pointer; background: transparent; }
+.tab-btn.active { background: var(--primary); color: white; }
+
+.chat-area { flex: 1; display: flex; flex-direction: column; }
+
+.messages-container {
     flex: 1;
     padding: 20px;
     overflow-y: auto;
-    /* L'IMAGE QUE TU AS FOURNIE */
-    background-image: url('ton-image.jpg'); 
+    /* REMPLACER PAR TON IMAGE */
+    background-image: url('https://i.imgur.com/8Qp7N9H.jpg'); 
     background-size: cover;
     background-position: center;
-    background-blend-mode: overlay;
-    background-color: rgba(255, 255, 255, 0.85); /* Rend l'image moins visible (transparente) */
+    background-attachment: fixed;
 }
 
-/* Bulles de message 3D */
+/* Pour rendre l'image "moins visible" / translucide */
+.messages-container::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(255, 255, 255, 0.85); /* Voile blanc pour adoucir */
+    z-index: 0;
+}
+
 .message {
-    max-width: 70%;
-    padding: 12px 18px;
+    position: relative;
+    z-index: 1;
+    max-width: 60%;
+    padding: 12px;
     margin: 10px 0;
     border-radius: 15px;
-    box-shadow: 2px 4px 10px rgba(0,0,0,0.05);
-    position: relative;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
-.received {
+.sent { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 2px; margin-left: auto; }
+.received { align-self: flex-start; background: white; border-bottom-left-radius: 2px; }
+
+.input-bar {
+    padding: 20px;
     background: white;
-    align-self: flex-start;
-    border-bottom-left-radius: 2px;
-}
-
-.sent {
-    background: #dcf8c6;
-    align-self: flex-end;
-    border-bottom-right-radius: 2px;
-}
-
-.chat-input-area {
-    padding: 15px;
-    background: #f0f2f5;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
 }
 
-.chat-input-area input { flex: 1; }
+.input-bar input { flex: 1; padding: 12px; border-radius: 25px; border: 1px solid #eee; outline: none; }
+.send-btn { background: var(--primary); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; }
