@@ -3,72 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelvin Loving 🏖️</title>
+    <title>KELVIN LOVING 🏖️</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Icones FontAwesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
 
-    <!-- Section Inscription -->
-    <section id="auth-section">
-        <div class="heart-container">
+    <!-- SECTION INSCRIPTION -->
+    <div id="auth-page">
+        <h1 class="main-title">KELVIN LOVING 🏖️</h1>
+        
+        <div class="heart-wrapper">
             <form id="register-form">
-                <h1>Kelvin Loving</h1>
-                <p>L'amour étudiant 🏖️</p>
-                
-                <input type="text" placeholder="Nom complet" required>
-                <input type="email" placeholder="Email universitaire" required>
-                <input type="tel" placeholder="Numéro de téléphone" required>
-                
-                <div class="row">
-                    <select id="gender" required>
-                        <option value="">Sexe</option>
-                        <option value="F">Fille</option>
-                        <option value="M">Garçon</option>
-                    </select>
-                    <input type="file" id="photo" accept="image/*">
+                <div class="heart-shape">
+                    <div class="form-content">
+                        <input type="text" id="reg-name" placeholder="Nom Complet" required>
+                        <input type="email" id="reg-email" placeholder="Email" required>
+                        <input type="tel" id="reg-phone" placeholder="Numéro" required>
+                        
+                        <div class="row">
+                            <select id="reg-gender" required>
+                                <option value="">Sexe</option>
+                                <option value="Fille">Fille 🚺</option>
+                                <option value="Garçon">Garçon 🚹</option>
+                            </select>
+                            <label for="reg-photo" class="custom-file-upload">Photo 📸</label>
+                            <input type="file" id="reg-photo" accept="image/*">
+                        </div>
+                        
+                        <input type="password" id="reg-pass" placeholder="Mot de passe" required>
+                        
+                        <button type="submit" id="btn-rejoindre">REJOINDRE</button>
+                    </div>
                 </div>
-
-                <input type="password" placeholder="Mot de passe" required>
-                <button type="submit">Rejoindre l'aventure</button>
             </form>
         </div>
-    </section>
+    </div>
 
-    <!-- Section Chat (Masquée par défaut) -->
-    <section id="chat-section" class="hidden">
-        <div class="sidebar">
-            <div class="user-profile">
-                <img src="https://via.placeholder.com/50" id="my-avatar">
-                <span id="my-name">Étudiant</span>
-            </div>
-            <div class="tabs">
-                <button class="tab-btn active" onclick="showTab('groups')">Groupes (10)</button>
-                <button class="tab-btn" onclick="showTab('private')">Privé</button>
-            </div>
-            <div id="list-container">
-                <!-- Groupes ou Utilisateurs en ligne chargés ici via JS -->
-            </div>
+    <!-- SECTION CHAT -->
+    <div id="chat-page" class="hidden">
+        <div class="app-container">
+            <!-- Barre Latérale -->
+            <aside class="sidebar">
+                <div class="my-profile">
+                    <img src="https://via.placeholder.com/40" id="user-img-top">
+                    <span id="user-name-top">Moi</span>
+                </div>
+                
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchView('groups')">Groupes</button>
+                    <button class="tab-btn" onclick="switchView('private')">Privé</button>
+                </div>
+
+                <div id="sidebar-list">
+                    <!-- Les groupes ou gens s'afficheront ici -->
+                </div>
+            </aside>
+
+            <!-- Fenêtre de Chat -->
+            <main class="chat-area">
+                <header class="chat-header">
+                    <div id="target-info">
+                        <strong id="chat-title">Sélectionnez une discussion</strong>
+                        <p id="chat-status"></p>
+                    </div>
+                </header>
+
+                <div class="messages-container" id="messages-box">
+                    <!-- Fond avec ton image ici -->
+                </div>
+
+                <div class="input-bar">
+                    <button class="action-btn"><i class="fas fa-microphone"></i></button>
+                    <input type="text" id="msg-input" placeholder="Écrire un message...">
+                    <button class="send-btn" id="send-msg"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </main>
         </div>
-
-        <div class="chat-window">
-            <div class="chat-header">
-                <span id="chat-title">Groupe Alpha (5F/5G)</span>
-                <span id="status-indicator">● En ligne</span>
-            </div>
-            
-            <div class="chat-messages" id="chat-box">
-                <!-- L'image de fond sera mise ici via CSS -->
-                <div class="message received">Bienvenue sur Kelvin Loving ! 👋</div>
-            </div>
-
-            <div class="chat-input-area">
-                <button class="icon-btn"><i class="fas fa-microphone"></i></button>
-                <input type="text" placeholder="Écrivez votre message...">
-                <button class="send-btn"><i class="fas fa-paper-plane"></i></button>
-            </div>
-        </div>
-    </section>
+    </div>
 
     <script src="script.js"></script>
 </body>
