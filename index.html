@@ -2,23 +2,24 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>KELVIN LOVING 🏖️ | Student Dating</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <nav id="nav-bar" class="hidden">
-        <div class="logo">KELVIN LOVING 🏖️</div>
-        <div class="nav-links">
-            <button onclick="showView('groups-view')">👥 Groupes</button>
-            <button onclick="showView('online-view')">🟢 En ligne</button>
-            <button onclick="logout()">Déconnexion</button>
-        </div>
-    </nav>
-
     <div id="app">
-        <!-- INSCRIPTION -->
+        <!-- BARRE DE NAVIGATION (Placée à l'intérieur pour le plein écran) -->
+        <nav id="nav-bar" class="hidden">
+            <div class="logo">KELVIN LOVING 🏖️</div>
+            <div class="nav-links">
+                <button onclick="showView('groups-view')">👥 Groupes</button>
+                <button onclick="showView('online-view')">🟢 En ligne</button>
+                <button onclick="logout()" class="btn-logout">Déconnexion</button>
+            </div>
+        </nav>
+
+        <!-- VUE INSCRIPTION -->
         <section id="signup-view" class="view">
             <h2>Rejoindre l'Amphi 🏖️</h2>
             <form id="signup-form">
@@ -31,14 +32,16 @@
                     <option value="F">Fille</option>
                 </select>
                 <input type="password" id="s-pass" placeholder="Mot de passe" minlength="6" required>
-                <label>Photo de profil</label>
-                <input type="file" id="s-photo" accept="image/*">
+                <div class="photo-input">
+                    <label>Photo de profil :</label>
+                    <input type="file" id="s-photo" accept="image/*">
+                </div>
                 <button type="submit" class="btn-main">S'inscrire</button>
             </form>
-            <p onclick="showView('login-view')">Déjà inscrit ? Connexion</p>
+            <p class="toggle-auth" onclick="showView('login-view')">Déjà inscrit ? <span>Connexion</span></p>
         </section>
 
-        <!-- CONNEXION -->
+        <!-- VUE CONNEXION -->
         <section id="login-view" class="view hidden">
             <h2>Connexion</h2>
             <form id="login-form">
@@ -46,32 +49,38 @@
                 <input type="password" id="l-pass" placeholder="Mot de passe" required>
                 <button type="submit" class="btn-main">Entrer</button>
             </form>
-            <p onclick="showView('signup-view')">Retour à l'inscription</p>
+            <p class="toggle-auth" onclick="showView('signup-view')">Retour à l'inscription</p>
         </section>
 
         <!-- LISTE DES GROUPES -->
         <section id="groups-view" class="view hidden">
-            <h3>Groupes de Discussion (Max 5♂️ / 5♀️)</h3>
+            <h3 class="view-title">Groupes de Discussion</h3>
             <div id="groups-list"></div>
         </section>
 
         <!-- ETUDIANTS EN LIGNE -->
         <section id="online-view" class="view hidden">
-            <h3>Étudiants en ligne</h3>
+            <h3 class="view-title">Étudiants en ligne</h3>
             <div id="online-list"></div>
         </section>
 
-        <!-- CHAT (GROUPE OU PRIVÉ) -->
+        <!-- VUE CHAT TYPE WHATSAPP -->
         <section id="chat-view" class="view hidden">
             <div id="chat-header">
-                <button onclick="leaveChat()">⬅️</button>
-                <h4 id="chat-title">Nom du Groupe</h4>
+                <button onclick="leaveChat()" class="btn-back">⬅️</button>
+                <div class="chat-info">
+                    <strong id="chat-title">Chargement...</strong>
+                </div>
             </div>
-            <div id="chat-messages"></div>
+
+            <div id="chat-messages">
+                <!-- Les messages s'affichent ici -->
+            </div>
+
             <div id="chat-controls">
-                <input type="text" id="msg-input" placeholder="Ton message...">
+                <input type="text" id="msg-input" placeholder="Écrire un message...">
                 <button id="btn-voice">🎤</button>
-                <button onclick="sendMessage()">🚀</button>
+                <button id="btn-send" onclick="sendMessage()">🚀</button>
             </div>
         </section>
     </div>
