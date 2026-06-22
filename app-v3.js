@@ -1,74 +1,69 @@
-// --- DATA MANAGEMENT ---
-const getData = (key) => JSON.parse(localStorage.getItem(key)) || (key === 'users' || key === 'matches' ? [] : {});
-const setData = (key, data) => localStorage.setItem(key, JSON.stringify(data));
+// --- INITIALISATION DES DONNÉES ---
+if (!localStorage.getItem('groups')) {
+    const initialGroups = [
+        { id: 'g1', name: "Amphi A - Chill 🏝️", members: [], messages: [] },
+        { id: 'g2', name: "Cafétéria Vibes ☕", members: [], messages: [] },
+        { id: 'g3', name: "Plage Étudiante 🌊", members: [], messages: [] }
+    ];
+    localStorage.setItem('groups', JSON.stringify(initialGroups));
+}
 
-// --- UTILS ---
-const getFlagEmoji = (countryCode) => {
-    return countryCode.toUpperCase().replace(/./g, char => 
-        String.fromCodePoint(char.charCodeAt(0) + 127397)
-    );
+const db = {
+    get: (key) => JSON.parse(localStorage.getItem(key)) || [],
+    save: (key, data) => localStorage.setItem(key, JSON.stringify(data)),
+    getUser: () => JSON.parse(localStorage.getItem('currentUser')) || null
 };
 
 // --- NAVIGATION ---
 function showView(viewId) {
     document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
     document.getElementById(viewId).classList.remove('hidden');
+    const user = db.getUser();
+    document.getElementById('nav-bar').classList.toggle('hidden', !user);
     
-    const currentUser = getData('currentUser');
-    document.getElementById('main-nav').classList.toggle('hidden', !currentUser.id);
-
-    if (viewId === 'swipe-view') renderSwipe();
-    if (viewId === 'matches-view') renderMatches();
+    if(viewId === 'groups-view') renderGroups();
+    if(viewId === 'online-view') renderOnline();
 }
 
-// --- AUTHENTIFICATION ---
+// --- INSCRIPTION ---
 document.getElementById('signup-form').onsubmit = async (e) => {
     e.preventDefault();
-    const users = getData('users');
-    const email = document.getElementById('sign-email').value;
-    
-    if (users.find(u => u.email === email)) return alert("Email déjà utilisé");
-
-    const photoFile = document.getElementById('sign-photo').files[0];
-    let photoBase64 = "https://i.pravatar.cc/300";
+    const photoFile = document.getElementById('s-photo').files[0];
+    let photo = "https://i.pravatar.cc/150";
 
     if (photoFile) {
-        photoBase64 = await new Promise(resolve => {
+        photo = await new Promise(r => {
             const reader = new FileReader();
-            reader.onload = () => resolve(reader.result);
+            reader.onload = () => r(reader.result);
             reader.readAsDataURL(photoFile);
         });
     }
 
     const newUser = {
         id: Date.now(),
-        name: document.getElementById('sign-name').value,
-        email,
-        password: document.getElementById('sign-password').value,
-        age: document.getElementById('sign-age').value,
-        country: document.getElementById('sign-country').value,
-        bio: document.getElementById('sign-bio').value,
-        photo: photoBase64
+        name: document.getElementById('s-name').value,
+        email: document.getElementById('s-email').value,
+        phone: document.getElementById('s-phone').value,
+        sex: document.getElementById('s-sex').value,
+        pass: document.getElementById('s-pass').value,
+        photo: photo,
+        isBusy: false
     };
 
+    const users = db.get('users');
     users.push(newUser);
-    setData('users', users);
-    alert("Inscription réussie !");
+    db.save('users', users);
+    alert("Compte KELVIN LOVING créé !");
     showView('login-view');
 };
 
 document.getElementById('login-form').onsubmit = (e) => {
     e.preventDefault();
-    const email = document.getElementById('login-email').value;
-    const pass = document.getElementById('login-password').value;
-    const user = getData('users').find(u => u.email === email && u.password === pass);
-
-    if (user) {
-        setData('currentUser', user);
-        showView('swipe-view');
-    } else {
-        alert("Identifiants incorrects");
-    }
+    const user = db.get('users').find(u => u.email === document.getElementById('l-email').value && u.pass === document.getElementById('l-pass').value);
+    if(user) {
+        db.save('currentUser', user);
+        showView('groups-view');
+    } else alert("Erreur d'accès");
 };
 
 function logout() {
@@ -76,170 +71,161 @@ function logout() {
     showView('login-view');
 }
 
-// --- SWIPE SYSTEM ---
-let currentSwipeProfiles = [];
+// --- LOGIQUE DES GROUPES (5M / 5F) ---
+function renderGroups() {
+    const groups = db.get('groups');
+    const container = document.getElementById('groups-list');
+    container.innerHTML = "";
 
-function renderSwipe() {
-    const me = getData('currentUser');
-    const users = getData('users');
-    const likes = getData('likes')[me.id] || [];
-    
-    // Filtrer : Pas moi-même, et pas ceux déjà swipés
-    currentSwipeProfiles = users.filter(u => u.id !== me.id && !likes.includes(u.id));
-    
-    const container = document.getElementById('card-container');
-    if (currentSwipeProfiles.length > 0) {
-        const user = currentSwipeProfiles[0];
-        container.innerHTML = `
-            <div class="profile-card" style="background-image: url('${user.photo}')">
-                <div class="info">
-                    <h3>${user.name}, ${user.age} ${getFlagEmoji(user.country)}</h3>
-                    <p>${user.bio}</p>
+    groups.forEach(g => {
+        const boys = g.members.filter(m => m.sex === 'M').length;
+        const girls = g.members.filter(m => m.sex === 'F').length;
+
+        container.innerHTML += `
+            <div class="group-card">
+                <div>
+                    <strong>${g.name}</strong><br>
+                    <small>♂️ ${boys}/5 | ♀️ ${girls}/5</small>
                 </div>
+                <button onclick="joinGroup('${g.id}')" ${(boys+girls >= 10) ? 'disabled' : ''}>Entrer</button>
             </div>
         `;
-    } else {
-        container.innerHTML = "<p>Plus personne autour de vous ! 🌍</p>";
-    }
-}
-
-function handleAction(type) {
-    if (currentSwipeProfiles.length === 0) return;
-    
-    const me = getData('currentUser');
-    const target = currentSwipeProfiles[0];
-    
-    // Sauvegarder le like
-    const allLikes = getData('likes');
-    if (!allLikes[me.id]) allLikes[me.id] = [];
-    allLikes[me.id].push(target.id);
-    setData('likes', allLikes);
-
-    if (type === 'like') {
-        // Check Match
-        const targetLikes = allLikes[target.id] || [];
-        if (targetLikes.includes(me.id)) {
-            createMatch(me, target);
-        }
-    }
-    
-    renderSwipe();
-}
-
-function createMatch(me, target) {
-    const matches = getData('matches');
-    const newMatch = {
-        id: "match_" + Date.now(),
-        user1: me.id,
-        user2: target.id,
-        messages: []
-    };
-    matches.push(newMatch);
-    setData('matches', matches);
-
-    // Popup
-    document.getElementById('match-announcement').innerHTML = `
-        <p>Toi et ${target.name} ${getFlagEmoji(target.country)} vous plaisez !</p>
-    `;
-    document.getElementById('match-modal').classList.remove('hidden');
-}
-
-function closeMatchModal() {
-    document.getElementById('match-modal').classList.add('hidden');
-    showView('matches-view');
-}
-
-// --- MATCHES & CHAT ---
-function renderMatches() {
-    const me = getData('currentUser');
-    const matches = getData('matches');
-    const users = getData('users');
-    const list = document.getElementById('matches-list');
-    
-    const myMatches = matches.filter(m => m.user1 === me.id || m.user2 === me.id);
-    
-    list.innerHTML = myMatches.length === 0 ? "<p>Aucun match pour le moment.</p>" : "";
-
-    myMatches.forEach(m => {
-        const otherId = m.user1 === me.id ? m.user2 : m.user1;
-        const otherUser = users.find(u => u.id === otherId);
-        
-        const div = document.createElement('div');
-        div.className = "match-item";
-        div.style = "display:flex; align-items:center; gap:15px; padding:10px; cursor:pointer; border-bottom:1px solid #eee";
-        div.innerHTML = `
-            <img src="${otherUser.photo}" style="width:50px; height:50px; border-radius:50%; object-fit:cover">
-            <div>
-                <strong>${otherUser.name} ${getFlagEmoji(otherUser.country)}</strong>
-                <p style="font-size:12px; color:gray">Cliquez pour discuter</p>
-            </div>
-        `;
-        div.onclick = () => openChat(m.id);
-        list.appendChild(div);
     });
 }
 
-let activeMatchId = null;
+function joinGroup(groupId) {
+    const user = db.getUser();
+    const groups = db.get('groups');
+    const group = groups.find(g => g.id === groupId);
 
-function openChat(matchId) {
-    activeMatchId = matchId;
-    const me = getData('currentUser');
-    const match = getData('matches').find(m => m.id === matchId);
-    const otherId = match.user1 === me.id ? match.user2 : match.user1;
-    const otherUser = getData('users').find(u => u.id === otherId);
+    const count = group.members.filter(m => m.sex === user.sex).length;
+    if (count >= 5) return alert("Désolé, il y a déjà 5 personnes de votre sexe dans ce groupe.");
+    if (group.members.length >= 10) return alert("Groupe plein !");
 
-    document.getElementById('chat-user-info').innerHTML = `
-        <strong>${otherUser.name} ${getFlagEmoji(otherUser.country)}</strong>
-    `;
+    if (!group.members.find(m => m.id === user.id)) {
+        group.members.push(user);
+        db.save('groups', groups);
+    }
     
+    currentChatId = groupId;
+    isGroupChat = true;
     showView('chat-view');
     renderMessages();
 }
 
-function renderMessages() {
-    const me = getData('currentUser');
-    const match = getData('matches').find(m => m.id === activeMatchId);
-    const container = document.getElementById('chat-messages');
+// --- LOGIQUE PRIVÉ & EN LIGNE ---
+function renderOnline() {
+    const me = db.getUser();
+    const users = db.get('users').filter(u => u.id !== me.id);
+    const container = document.getElementById('online-list');
+    container.innerHTML = "";
+
+    users.forEach(u => {
+        container.innerHTML += `
+            <div class="user-card">
+                <img src="${u.photo}" style="width:40px; height:40px; border-radius:50%">
+                <div>
+                    <strong>${u.name}</strong> <span class="tag ${u.sex}">${u.sex}</span><br>
+                    <small>${u.isBusy ? '🔴 Occupé(e)' : '🟢 Dispo'}</small>
+                </div>
+                <button onclick="startPrivate('${u.id}')" ${u.isBusy ? 'disabled' : ''}>Inviter</button>
+            </div>
+        `;
+    });
+}
+
+function startPrivate(otherId) {
+    const me = db.getUser();
+    const users = db.get('users');
+    const other = users.find(u => u.id == otherId);
+
+    // Règle Sexe : Pas de M-M
+    if (me.sex === 'M' && other.sex === 'M') {
+        return alert("Règle KELVIN LOVING : Pas de discussion privée entre garçons !");
+    }
+
+    if (other.isBusy) return alert("Cet étudiant est déjà en ligne avec quelqu'un.");
+
+    // Créer ou ouvrir chat privé
+    currentChatId = [me.id, other.id].sort().join('_');
+    isGroupChat = false;
     
-    container.innerHTML = match.messages.map(msg => `
-        <div class="msg ${msg.senderId === me.id ? 'sent' : 'received'}">
-            ${msg.text}
+    // Marquer comme occupé (simulation)
+    me.isBusy = true;
+    // En vrai, il faudrait mettre à jour la DB globale
+    
+    showView('chat-view');
+    document.getElementById('chat-title').innerText = "Privé avec " + other.name;
+    renderMessages();
+}
+
+// --- SYSTÈME DE CHAT ---
+let currentChatId = null;
+let isGroupChat = true;
+
+function sendMessage() {
+    const text = document.getElementById('msg-input').value;
+    if(!text) return;
+    saveMessage({ type: 'text', content: text });
+    document.getElementById('msg-input').value = "";
+}
+
+function saveMessage(msgObj) {
+    const me = db.getUser();
+    const fullMsg = { ...msgObj, senderId: me.id, senderName: me.name, time: new Date() };
+
+    if(isGroupChat) {
+        const groups = db.get('groups');
+        groups.find(g => g.id === currentChatId).messages.push(fullMsg);
+        db.save('groups', groups);
+    } else {
+        const privates = db.get('privates') || {};
+        if(!privates[currentChatId]) privates[currentChatId] = [];
+        privates[currentChatId].push(fullMsg);
+        db.save('privates', privates);
+    }
+    renderMessages();
+}
+
+function renderMessages() {
+    const me = db.getUser();
+    const container = document.getElementById('chat-messages');
+    let msgs = [];
+
+    if(isGroupChat) {
+        msgs = db.get('groups').find(g => g.id === currentChatId).messages;
+    } else {
+        msgs = (db.get('privates') || {})[currentChatId] || [];
+    }
+
+    container.innerHTML = msgs.map(m => `
+        <div class="msg ${m.senderId === me.id ? 'me' : 'other'}">
+            <small>${m.senderName}</small><br>
+            ${m.type === 'voice' ? '🎤 Message Vocal (Lecture...)' : m.content}
         </div>
     `).join('');
     container.scrollTop = container.scrollHeight;
 }
 
-function sendMessage() {
-    const input = document.getElementById('msg-input');
-    const text = input.value.trim();
-    if (!text) return;
+// --- SIMULATION VOCAL ---
+let mediaRecorder;
+const voiceBtn = document.getElementById('btn-voice');
 
-    const me = getData('currentUser');
-    const matches = getData('matches');
-    const matchIndex = matches.findIndex(m => m.id === activeMatchId);
-
-    matches[matchIndex].messages.push({
-        senderId: me.id,
-        text: text,
-        time: new Date().toISOString()
-    });
-
-    setData('matches', matches);
-    input.value = "";
-    renderMessages();
-}
-
-// Support Touche Entrée
-document.getElementById('msg-input').onkeypress = (e) => {
-    if (e.key === 'Enter') sendMessage();
+voiceBtn.onclick = () => {
+    if (!mediaRecorder || mediaRecorder.state === "inactive") {
+        voiceBtn.classList.add('recording');
+        // Ici on simule car sans serveur on ne peut pas stocker de gros fichiers audio facilement
+        setTimeout(() => {
+            voiceBtn.classList.remove('recording');
+            saveMessage({ type: 'voice', content: 'audio_file_url' });
+        }, 2000);
+    }
 };
 
-// --- INIT APP ---
+function leaveChat() {
+    showView('groups-view');
+}
+
 window.onload = () => {
-    const me = getData('currentUser');
-    if (me.id) {
-        showView('swipe-view');
-    } else {
-        showView('login-view');
-    }
+    if(db.getUser()) showView('groups-view');
 };
