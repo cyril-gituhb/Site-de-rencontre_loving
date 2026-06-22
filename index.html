@@ -3,98 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DatingApp | Trouvez l'amour</title>
+    <title>KELVIN LOVING 🏖️ | Student Dating</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Barre de Navigation (visible si connecté) -->
-    <nav id="main-nav" class="hidden">
-        <button onclick="showView('swipe-view')">🔥</button>
-        <button onclick="showView('matches-view')">💬</button>
-        <button onclick="logout()">Logout</button>
+    <nav id="nav-bar" class="hidden">
+        <div class="logo">KELVIN LOVING 🏖️</div>
+        <div class="nav-links">
+            <button onclick="showView('groups-view')">👥 Groupes</button>
+            <button onclick="showView('online-view')">🟢 En ligne</button>
+            <button onclick="logout()">Déconnexion</button>
+        </div>
     </nav>
 
     <div id="app">
-        <!-- VUE CONNEXION -->
-        <section id="login-view" class="view">
-            <h1>DatingApp</h1>
-            <form id="login-form">
-                <input type="email" id="login-email" placeholder="Email" required>
-                <input type="password" id="login-password" placeholder="Mot de passe" required>
-                <button type="submit" class="btn-primary">Se connecter</button>
-            </form>
-            <p>Pas de compte ? <a href="#" onclick="showView('signup-view')">S'inscrire</a></p>
-        </section>
-
-        <!-- VUE INSCRIPTION -->
-        <section id="signup-view" class="view hidden">
-            <h1>Créer un profil</h1>
+        <!-- INSCRIPTION -->
+        <section id="signup-view" class="view">
+            <h2>Rejoindre l'Amphi 🏖️</h2>
             <form id="signup-form">
-                <input type="text" id="sign-name" placeholder="Prénom" required>
-                <input type="email" id="sign-email" placeholder="Email" required>
-                <input type="password" id="sign-password" placeholder="Mot de passe (min 6)" minlength="6" required>
-                <input type="number" id="sign-age" placeholder="Âge (min 18)" min="18" required>
-                
-                <select id="sign-country" required>
-                    <option value="">-- Pays --</option>
-                    <option value="FR">France</option>
-                    <option value="CD">RD Congo</option>
-                    <option value="BE">Belgique</option>
-                    <option value="CI">Côte d'Ivoire</option>
-                    <option value="CM">Cameroun</option>
-                    <option value="SN">Sénégal</option>
-                    <option value="CA">Canada</option>
+                <input type="text" id="s-name" placeholder="Nom complet" required>
+                <input type="email" id="s-email" placeholder="Email étudiant" required>
+                <input type="tel" id="s-phone" placeholder="Numéro de téléphone" required>
+                <select id="s-sex" required>
+                    <option value="">Sexe</option>
+                    <option value="M">Garçon</option>
+                    <option value="F">Fille</option>
                 </select>
-
-                <textarea id="sign-bio" placeholder="Bio..." maxlength="150"></textarea>
-                
-                <label>Photo de profil :</label>
-                <input type="file" id="sign-photo" accept="image/*">
-                
-                <button type="submit" class="btn-primary">Créer mon compte</button>
+                <input type="password" id="s-pass" placeholder="Mot de passe" minlength="6" required>
+                <label>Photo de profil</label>
+                <input type="file" id="s-photo" accept="image/*">
+                <button type="submit" class="btn-main">S'inscrire</button>
             </form>
-            <p>Déjà inscrit ? <a href="#" onclick="showView('login-view')">Connexion</a></p>
+            <p onclick="showView('login-view')">Déjà inscrit ? Connexion</p>
         </section>
 
-        <!-- VUE SWIPE -->
-        <section id="swipe-view" class="view hidden">
-            <div id="card-container">
-                <!-- La carte s'affichera ici via JS -->
-            </div>
-            <div class="swipe-actions">
-                <button onclick="handleAction('pass')" class="btn-pass">❌</button>
-                <button onclick="handleAction('like')" class="btn-like">❤️</button>
-            </div>
+        <!-- CONNEXION -->
+        <section id="login-view" class="view hidden">
+            <h2>Connexion</h2>
+            <form id="login-form">
+                <input type="email" id="l-email" placeholder="Email" required>
+                <input type="password" id="l-pass" placeholder="Mot de passe" required>
+                <button type="submit" class="btn-main">Entrer</button>
+            </form>
+            <p onclick="showView('signup-view')">Retour à l'inscription</p>
         </section>
 
-        <!-- VUE LISTE MATCHES -->
-        <section id="matches-view" class="view hidden">
-            <h2>Mes Matchs</h2>
-            <div id="matches-list"></div>
+        <!-- LISTE DES GROUPES -->
+        <section id="groups-view" class="view hidden">
+            <h3>Groupes de Discussion (Max 5♂️ / 5♀️)</h3>
+            <div id="groups-list"></div>
         </section>
 
-        <!-- VUE CHAT -->
+        <!-- ETUDIANTS EN LIGNE -->
+        <section id="online-view" class="view hidden">
+            <h3>Étudiants en ligne</h3>
+            <div id="online-list"></div>
+        </section>
+
+        <!-- CHAT (GROUPE OU PRIVÉ) -->
         <section id="chat-view" class="view hidden">
             <div id="chat-header">
-                <button onclick="showView('matches-view')">⬅️</button>
-                <div id="chat-user-info"></div>
+                <button onclick="leaveChat()">⬅️</button>
+                <h4 id="chat-title">Nom du Groupe</h4>
             </div>
             <div id="chat-messages"></div>
-            <div id="chat-input-area">
-                <input type="text" id="msg-input" placeholder="Écrire un message...">
-                <button onclick="sendMessage()">Envoyer</button>
+            <div id="chat-controls">
+                <input type="text" id="msg-input" placeholder="Ton message...">
+                <button id="btn-voice">🎤</button>
+                <button onclick="sendMessage()">🚀</button>
             </div>
         </section>
-    </div>
-
-    <!-- MODAL MATCH -->
-    <div id="match-modal" class="modal hidden">
-        <div class="modal-content">
-            <h2>🎉 C'EST UN MATCH !</h2>
-            <div id="match-announcement"></div>
-            <button onclick="closeMatchModal()" class="btn-primary">Continuer</button>
-        </div>
     </div>
 
     <script src="app-v3.js"></script>
