@@ -1,119 +1,166 @@
-// --- INITIALISATION DES DONNÉES (Simulation LocalStorage) ---
-const GROUPS_DATA = [
-    { id: 1, name: "Alpha Beach 🏖️", girls: 4, boys: 5 },
-    { id: 2, name: "Étudiants VIP", girls: 5, boys: 4 },
-    { id: 3, name: "Club Lecture 📚", girls: 2, boys: 2 }
-];
+let user = null;
+let groupeActif = null;
+let chatActif = null;
 
-const ONLINE_USERS = [
-    { id: 101, name: "Sarah", gender: "Fille", busy: false },
-    { id: 102, name: "Kevin", gender: "Garçon", busy: true },
-    { id: 103, name: "Julie", gender: "Fille", busy: false },
-    { id: 104, name: "Marc", gender: "Garçon", busy: false }
-];
+// Sélection sexe
+document.querySelectorAll('.sexe-btn').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.sexe-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('sexe').value = btn.dataset.sexe;
+  }
+});
 
-let currentUser = JSON.parse(localStorage.getItem('kelvin_user')) || null;
-
-// --- GESTION DE L'INSCRIPTION ---
-document.getElementById('register-form').onsubmit = function(e) {
-    e.preventDefault();
-    
-    const user = {
-        name: document.getElementById('reg-name').value,
-        email: document.getElementById('reg-email').value,
-        gender: document.getElementById('reg-gender').value,
-        isOccupied: false
-    };
-
-    localStorage.setItem('kelvin_user', JSON.stringify(user));
-    currentUser = user;
-    loadApp();
-};
-
-function loadApp() {
-    if(!currentUser) return;
-    document.getElementById('auth-page').classList.add('hidden');
-    document.getElementById('chat-page').classList.remove('hidden');
-    document.getElementById('user-name-top').innerText = currentUser.name;
-    renderSidebar('groups');
+// Photo preview
+document.getElementById('photo').onchange = e => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    document.getElementById('preview').src = reader.result;
+    document.getElementById('preview').style.display = 'block';
+    localStorage.setItem('tempPhoto', reader.result);
+  }
+  reader.readAsDataURL(file);
 }
 
-// --- LOGIQUE DU CHAT ---
-function switchView(type) {
-    renderSidebar(type);
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active'));
+function sInscrire(){
+  const nom = document.getElementById('nom').value.trim();
+  const sexe = document.getElementById('sexe').value;
+  const photo = localStorage.getItem('tempPhoto');
+  if(!nom ||!sexe ||!photo) return alert('Remplis tout!');
+
+  user = {id: Date.now(), nom, sexe, photo, chatAvec: null, groupe: null};
+  localStorage.setItem('k_user', JSON.stringify(user));
+  rejoindreGroupe();
+  showPage('page-lobby');
 }
 
-function renderSidebar(type) {
-    const list = document.getElementById('sidebar-list');
-    list.innerHTML = "";
-
-    if(type === 'groups') {
-        GROUPS_DATA.forEach(g => {
-            const item = document.createElement('div');
-            item.className = "sidebar-item";
-            item.innerHTML = `
-                <div style="padding:15px; border-bottom:1px solid #eee; cursor:pointer">
-                    <strong>${g.name}</strong> <br>
-                    <small>${g.girls} Filles / ${g.boys} Garçons</small>
-                </div>
-            `;
-            item.onclick = () => joinGroup(g);
-            list.appendChild(item);
-        });
-    } else {
-        ONLINE_USERS.forEach(u => {
-            const item = document.createElement('div');
-            item.className = "sidebar-item";
-            item.innerHTML = `
-                <div style="padding:15px; border-bottom:1px solid #eee; cursor:pointer">
-                    <strong>${u.name}</strong> (${u.gender}) <br>
-                    <small>${u.busy ? '🔴 Occupé' : '🟢 En ligne'}</small>
-                </div>
-            `;
-            item.onclick = () => startPrivateChat(u);
-            list.appendChild(item);
-        });
-    }
+function rejoindreGroupe(){
+  let groupes = JSON.parse(localStorage.getItem('k_groupes')) || [];
+  let groupe = groupes.find(g => {
+    if(user.sexe==='fille') return g.filles.length < 5;
+    return g.garcons.length < 5;
+  });
+  if(!groupe){
+    groupe = {id: Date.now(), filles:[], garcons:[]};
+    groupes.push(groupe);
+  }
+  if(!groupe.filles.find(u=>u.id===user.id) &&!groupe.garcons.find(u=>u.id===user.id)){
+    user.sexe==='fille'? groupe.filles.push(user) : groupe.garcons.push(user);
+    user.groupe = groupe.id;
+    localStorage.setItem('k_user', JSON.stringify(user));
+  }
+  localStorage.setItem('k_groupes', JSON.stringify(groupes));
+  groupeActif = groupe;
+  afficherGroupes();
 }
 
-// --- RÈGLES DE CONNEXION ---
-function joinGroup(group) {
-    const total = group.girls + group.boys;
-    if (total >= 10) return alert("Groupe Complet (10/10) !");
-    
-    // Vérification mixité
-    if(currentUser.gender === "Garçon" && group.boys >= 5) return alert("Plus de place pour les garçons !");
-    if(currentUser.gender === "Fille" && group.girls >= 5) return alert("Plus de place pour les filles !");
+function afficherGroupes(){
+  const div = document.getElementById('groupes');
+  const groupes = JSON.parse(localStorage.getItem('k_groupes')) || [];
 
-    document.getElementById('chat-title').innerText = group.name;
-    document.getElementById('chat-status').innerText = `${group.girls}F / ${group.boys}G`;
+  div.innerHTML = groupes.map(g => {
+    const complet = g.filles.length===5 && g.garcons.length===5;
+    const opposés = user.sexe==='fille'? g.garcons : g.filles;
+
+    return `
+    <div class="groupe" onclick="${complet?`entrerChat(${g.id})`:'alert(\'En attente de joueurs...\')'}">
+      <h3>Groupe #${g.id.toString().slice(-4)}</h3>
+      <p>${g.filles.length}/5 filles • ${g.garcons.length}/5 garçons ${complet?'✓':''}</p>
+      <div class="avatars">
+        ${opposés.slice(0,5).map(f=>`<img class="avatar" src="${f.photo}" title="${f.nom}">`).join('')}
+      </div>
+    </div>`;
+  }).join('');
 }
 
-function startPrivateChat(target) {
-    // REGLE : Pas garçon avec garçon
-    if(currentUser.gender === "Garçon" && target.gender === "Garçon") {
-        return alert("Désolé, la discussion privée Garçon-Garçon est désactivée sur Kelvin Loving.");
-    }
+function entrerChat(id){
+  localStorage.setItem('k_groupeActif', id);
+  groupeActif = JSON.parse(localStorage.getItem('k_groupes')).find(g=>g.id==id);
 
-    if(target.busy) return alert("Cet étudiant est déjà occupé !");
+  // Ouvre direct le premier membre dispo
+  const opposés = user.sexe==='fille'? groupeActif.garcons : groupeActif.filles;
+  const dispo = opposés.find(m =>!m.chatAvec || m.chatAvec===user.id);
 
-    document.getElementById('chat-title').innerText = "Chat avec " + target.name;
-    document.getElementById('chat-status').innerText = "En ligne";
-    document.getElementById('messages-box').innerHTML = `<div class="message received">Salut ${currentUser.name} !</div>`;
+  if(!dispo) return alert('Tout le monde est occupé ❤️');
+  ouvrirChat(dispo.id);
+  showPage('page-chat');
 }
 
-// Envoi de message (Simulé)
-document.getElementById('send-msg').onclick = function() {
-    const text = document.getElementById('msg-input').value;
-    if(!text) return;
-    
-    const msg = document.createElement('div');
-    msg.className = "message sent";
-    msg.innerText = text;
-    document.getElementById('messages-box').appendChild(msg);
-    document.getElementById('msg-input').value = "";
-};
+function ouvrirChat(idMembre){
+  const membre = [...groupeActif.filles,...groupeActif.garcons].find(u=>u.id===idMembre);
+  if(membre.chatAvec && membre.chatAvec!==user.id){
+    return alert(membre.nom + ' est occupé ❤️');
+  }
+  if(!membre.chatAvec){
+    membre.chatAvec = user.id;
+    user.chatAvec = membre.id;
+    sauverGroupe();
+  }
+  chatActif = membre;
+  document.getElementById('chat-photo').src = membre.photo;
+  document.getElementById('chat-nom').innerText = membre.nom;
+  afficherMessages();
+}
 
-// Vérifier si déjà connecté au chargement
-window.onload = loadApp;
+function envoyer(){
+  const texte = document.getElementById('msg').value.trim();
+  if(!texte ||!chatActif) return;
+  const key = `chat_${Math.min(user.id,chatActif.id)}_${Math.max(user.id,chatActif.id)}`;
+  let msgs = JSON.parse(localStorage.getItem(key)) || [];
+  msgs.push({de: user.id, texte, time: Date.now()});
+  localStorage.setItem(key, JSON.stringify(msgs));
+  document.getElementById('msg').value = '';
+  afficherMessages();
+}
+
+function afficherMessages(){
+  if(!chatActif) return;
+  const key = `chat_${Math.min(user.id,chatActif.id)}_${Math.max(user.id,chatActif.id)}`;
+  const msgs = JSON.parse(localStorage.getItem(key)) || [];
+
+  document.getElementById('messages').innerHTML = msgs.map(m => {
+    const heure = new Date(m.time).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+    const check = m.de===user.id? '<span class="check">✓</span>' : '';
+    return `
+    <div class="msg ${m.de===user.id?'moi':'autre'}">
+      <div class="bulle">${m.texte}<span class="heure">${heure}${check}</span></div>
+    </div>`;
+  }).join('');
+  document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+}
+
+function sauverGroupe(){
+  let groupes = JSON.parse(localStorage.getItem('k_groupes'));
+  const idx = groupes.findIndex(g=>g.id===groupeActif.id);
+  groupes[idx] = groupeActif;
+  localStorage.setItem('k_groupes', JSON.stringify(groupes));
+  localStorage.setItem('k_user', JSON.stringify(user));
+}
+
+function retourLobby(){
+  chatActif = null;
+  showPage('page-lobby');
+  afficherGroupes();
+}
+
+function deconnecter(){
+  localStorage.clear();
+  user = null;
+  showPage('page-signup');
+}
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+window.onload = () => {
+  user = JSON.parse(localStorage.getItem('k_user'));
+  if(user){
+    groupeActif = JSON.parse(localStorage.getItem('k_groupes'))?.find(g=>g.id==user.groupe);
+    showPage('page-lobby');
+    afficherGroupes();
+  }
+}
