@@ -1,161 +1,104 @@
-:root {
-    --primary: #ff3860;
-    --secondary: #3b5998;
-    --bg-chat: rgba(255, 255, 255, 0.9);
+* {margin:0;padding:0;box-sizing:border-box;font-family:'Roboto',sans-serif}
+
+body {background:#e5ddd5;height:100vh}
+
+.page {display:none;height:100vh}
+.page.active {display:flex;flex-direction:column}
+
+/* HEADER VERT WHATSAPP */
+.whatsapp-header {
+  background:#128C7E;color:white;padding:16px;font-size:20px;font-weight:600;
+  display:flex;justify-content:space-between;align-items:center
+}
+.whatsapp-header button {background:none;border:none;color:white;font-size:14px;cursor:pointer}
+
+/* SIGNUP CARD */
+.card {
+  flex:1;background:#fff;padding:30px;max-width:400px;margin:auto;
+  display:flex;flex-direction:column;gap:15px
+}
+.card h2 {color:#128C7E;text-align:center;margin-bottom:10px}
+input,.upload {
+  padding:14px;border:1px solid #ddd;border-radius:8px;font-size:15px
+}
+.sexe-box {display:flex;gap:10px}
+.sexe-btn {
+  flex:1;padding:12px;border:1px solid #ddd;background:white;
+  border-radius:8px;cursor:pointer;font-weight:600
+}
+.sexe-btn.active {background:#128C7E;color:white;border-color:#128C7E}
+.upload {
+  background:#f0f0f0;text-align:center;cursor:pointer;border:2px dashed #128C7E;color:#128C7E
+}
+.upload input {display:none}
+#preview {width:100px;height:100px;border-radius:50%;object-fit:cover;margin:10px auto;display:none;border:3px solid #128C7E}
+
+button {
+  background:#25D366;color:white;border:none;padding:14px;
+  border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer
+}
+.note {font-size:12px;color:#999;text-align:center}
+
+/* LOBBY LISTE CHAT */
+.chat-list {flex:1;overflow-y:auto;background:white}
+.groupe {
+  padding:15px;border-bottom:1px solid #f0f0f0;cursor:pointer
+}
+.groupe:hover {background:#f8f8f8}
+.groupe h3 {font-size:16px;color:#000;margin-bottom:5px}
+.groupe p {font-size:13px;color:#667781}
+.avatars {display:flex;gap:5px;margin-top:8px}
+.avatar {width:35px;height:35px;border-radius:50%;object-fit:cover;border:2px solid #128C7E}
+
+/* CHAT WHATSAPP */
+.chat-container {flex:1;display:flex;flex-direction:column;background:#e5ddd5}
+.chat-header {
+  background:#128C7E;color:white;padding:10px 15px;display:flex;align-items:center;gap:12px
+}
+.chat-header button {background:none;border:none;color:white;font-size:22px;cursor:pointer}
+.chat-header img {width:40px;height:40px;border-radius:50%;object-fit:cover}
+.chat-header small {font-size:12px;opacity:0.8}
+
+.messages {
+  flex:1;padding:20px;overflow-y:auto;
+  background-image:url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+  background-size:cover
+}
+.msg {
+  display:flex;margin:8px 0
+}
+.msg.moi {justify-content:flex-end}
+.msg.autre {justify-content:flex-start}
+
+.bulle {
+  max-width:65%;padding:8px 12px;border-radius:8px;
+  position:relative;font-size:15px;line-height:1.4;word-wrap:break-word
+}
+.msg.moi.bulle {
+  background:#DCF8C6;border-top-right-radius:0
+}
+.msg.autre.bulle {
+  background:white;border-top-left-radius:2px
+}
+.heure {
+  font-size:11px;color:#999;margin-left:8px;display:inline-block
+}
+.check {
+  font-size:12px;color:#53bdeb;margin-left:3px
 }
 
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #fce4ec 0%, #ffebee 100%);
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+.input-box {
+  display:flex;padding:8px;background:#f0f0f0;gap:8px;align-items:center
+}
+.input-box input {
+  flex:1;padding:12px;border-radius:25px;border:none;font-size:15px;margin:0
+}
+.input-box button {
+  width:45px;height:45px;border-radius:50%;padding:0;background:#128C7E;font-size:20px
 }
 
-.hidden { display: none !important; }
+.sidebar {display:none} /* On cache la sidebar, style WhatsApp = chat direct */
 
-/* TITRE AU DESSUS */
-.main-title {
-    color: var(--primary);
-    font-size: 3rem;
-    text-shadow: 2px 2px 10px rgba(0,0,0,0.1);
-    text-align: center;
-    margin-bottom: 20px;
-    font-weight: 800;
+@media(max-width:768px){
+ .bulle {max-width:80%}
 }
-
-/* LE COEUR */
-.heart-wrapper {
-    position: relative;
-    width: 450px;
-    height: 400px;
-}
-
-.heart-shape {
-    background-color: white;
-    width: 100%;
-    height: 100%;
-    position: relative;
-    box-shadow: 0 15px 35px rgba(255, 56, 96, 0.2);
-    /* Forme de coeur précise */
-    clip-path: path("M225,400 C225,400 0,280 0,140 A100,100 0 0,1 225,140 A100,100 0 0,1 450,140 C450,280 225,400 225,400 Z");
-    display: flex;
-    justify-content: center;
-}
-
-.form-content {
-    width: 70%;
-    margin-top: 100px; /* Aligné pour entrer dans les arrondis du coeur */
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.form-content input, .form-content select {
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid #eee;
-    outline: none;
-    font-size: 0.9rem;
-}
-
-.row { display: flex; gap: 5px; }
-
-.custom-file-upload {
-    background: #eee;
-    padding: 10px;
-    font-size: 0.8rem;
-    border-radius: 10px;
-    cursor: pointer;
-    flex: 1;
-    text-align: center;
-}
-
-#reg-photo { display: none; }
-
-#btn-rejoindre {
-    background: var(--primary);
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(255, 56, 96, 0.4);
-    transition: 0.3s;
-    margin-top: 5px;
-}
-
-#btn-rejoindre:hover { transform: scale(1.05); }
-
-/* INTERFACE CHAT 3D */
-.app-container {
-    width: 95vw;
-    height: 90vh;
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
-    border-radius: 30px;
-    display: flex;
-    box-shadow: 0 25px 50px rgba(0,0,0,0.1);
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.5);
-}
-
-.sidebar { width: 300px; background: rgba(255,255,255,0.5); border-right: 1px solid rgba(0,0,0,0.05); }
-
-.my-profile { padding: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #eee; }
-.my-profile img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
-
-.tabs { display: flex; padding: 10px; gap: 5px; }
-.tab-btn { flex: 1; padding: 8px; border: none; border-radius: 10px; cursor: pointer; background: transparent; }
-.tab-btn.active { background: var(--primary); color: white; }
-
-.chat-area { flex: 1; display: flex; flex-direction: column; }
-
-.messages-container {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-    /* REMPLACER PAR TON IMAGE */
-    background-image: url('https://i.imgur.com/8Qp7N9H.jpg'); 
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-}
-
-/* Pour rendre l'image "moins visible" / translucide */
-.messages-container::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(255, 255, 255, 0.85); /* Voile blanc pour adoucir */
-    z-index: 0;
-}
-
-.message {
-    position: relative;
-    z-index: 1;
-    max-width: 60%;
-    padding: 12px;
-    margin: 10px 0;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-}
-
-.sent { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 2px; margin-left: auto; }
-.received { align-self: flex-start; background: white; border-bottom-left-radius: 2px; }
-
-.input-bar {
-    padding: 20px;
-    background: white;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.input-bar input { flex: 1; padding: 12px; border-radius: 25px; border: 1px solid #eee; outline: none; }
-.send-btn { background: var(--primary); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; }
