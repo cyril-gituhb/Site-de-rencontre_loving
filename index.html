@@ -4,7 +4,309 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>kELVIN Loving</title>
-<link rel="stylesheet" href="style.css">
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  background: #e5ddd5;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.page {
+  display: none;
+  height: 100vh;
+  flex-direction: column;
+}
+
+.page.active {
+  display: flex;
+}
+
+.whatsapp-header {
+  background: #128C7E;
+  color: white;
+  padding: 16px 20px;
+  font-size: 20px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.whatsapp-header button {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+#page-signup {
+  background: linear-gradient(135deg, #128C7E 0%, #25D366 100%);
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  background: white;
+  padding: 35px 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  max-width: 380px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.card h2 {
+  color: #128C7E;
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+#nom {
+  padding: 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+  width: 100%;
+}
+
+.sexe-box {
+  display: flex;
+  gap: 10px;
+}
+
+.sexe-btn {
+  flex: 1;
+  padding: 14px;
+  border: 2px solid #e0e0e0;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 28px;
+  transition: all 0.2s;
+}
+
+.sexe-btn.active {
+  background: #DCF8C6;
+  border-color: #128C7E;
+  transform: scale(1.05);
+}
+
+.upload {
+  background: #f8f9fa;
+  text-align: center;
+  cursor: pointer;
+  border: 2px dashed #128C7E;
+  color: #128C7E;
+  padding: 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+#photo {
+  display: none;
+}
+
+#preview {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 10px auto;
+  display: none;
+  border: 3px solid #128C7E;
+}
+
+.card button {
+  background: #25D366;
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.note {
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+}
+
+#groupes {
+  flex: 1;
+  overflow-y: auto;
+  background: white;
+}
+
+.groupe {
+  padding: 18px 20px;
+  border-bottom: 1px solid #f5f5f5;
+  cursor: pointer;
+}
+
+.groupe:hover {
+  background: #f8f8f8;
+}
+
+.groupe h3 {
+  font-size: 16px;
+  color: #000;
+  margin-bottom: 5px;
+}
+
+.groupe p {
+  font-size: 13px;
+  color: #667781;
+}
+
+.avatars {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #25D366;
+}
+
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #e5ddd5;
+  background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+  background-size: cover;
+}
+
+.chat-header {
+  background: #128C7E;
+  color: white;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.chat-header button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+#chat-photo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+}
+
+.messages {
+  flex: 1;
+  padding: 20px 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.msg {
+  display: flex;
+  margin: 4px 0;
+}
+
+.msg.moi {
+  justify-content: flex-end;
+}
+
+.msg.autre {
+  justify-content: flex-start;
+}
+
+.bulle {
+  max-width: 65%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1.4;
+  word-wrap: break-word;
+  box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
+}
+
+.msg.moi.bulle {
+  background: #DCF8C6;
+  border-top-right-radius: 2px;
+}
+
+.msg.autre.bulle {
+  background: white;
+  border-top-left-radius: 2px;
+}
+
+.heure {
+  font-size: 11px;
+  color: #999;
+  margin-left: 8px;
+}
+
+.check {
+  font-size: 12px;
+  color: #53bdeb;
+  margin-left: 3px;
+}
+
+.input-box {
+  display: flex;
+  padding: 10px 15px;
+  background: #f0f0f0;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+#msg {
+  flex: 1;
+  padding: 12px 18px;
+  border-radius: 25px;
+  border: none;
+  font-size: 15px;
+  outline: none;
+}
+
+.input-box button {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #128C7E;
+  color: white;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+</style>
 </head>
 <body>
 
@@ -13,9 +315,8 @@
   <div class="whatsapp-header">kELVIN Loving</div>
   <div class="card">
     <h2>Bienvenue ❤️</h2>
-    
-    <input id="nom" type="text" placeholder="Ton prénom" autocomplete="off">
-    
+    <input id="nom" type="text" placeholder="Ton prénom">
+
     <div class="sexe-box">
       <button type="button" class="sexe-btn" data-sexe="fille">👩 Fille</button>
       <button type="button" class="sexe-btn" data-sexe="garcon">👨 Garçon</button>
@@ -25,7 +326,7 @@
     <label class="upload">📷 Photo de profil
       <input type="file" id="photo" accept="image/*">
     </label>
-    <img id="preview" alt="preview">
+    <img id="preview">
 
     <button type="button" onclick="sInscrire()">Continuer</button>
     <p class="note">5 filles + 5 garçons par groupe</p>
@@ -38,30 +339,216 @@
     <span>Groupes kELVIN</span>
     <button type="button" onclick="deconnecter()">Déco</button>
   </div>
-  <div id="groupes" class="chat-list"></div>
+  <div id="groupes"></div>
 </section>
 
 <!-- CHAT -->
 <section id="page-chat" class="page">
   <div class="chat-container">
-    <div class="chat-header" id="chat-header">
+    <div class="chat-header">
       <button type="button" onclick="retourLobby()">←</button>
-      <img id="chat-photo" alt="">
+      <img id="chat-photo">
       <div>
         <b id="chat-nom"></b>
         <small id="chat-status">en ligne</small>
       </div>
     </div>
-    
+
     <div class="messages" id="messages"></div>
-    
+
     <div class="input-box">
-      <input id="msg" type="text" placeholder="Tape un message" autocomplete="off">
+      <input id="msg" type="text" placeholder="Tape un message">
       <button type="button" onclick="envoyer()">➤</button>
     </div>
   </div>
 </section>
 
-<script src="app.js"></script>
+<script>
+let user = null;
+let groupeActif = null;
+let chatActif = null;
+
+// Sexe
+document.querySelectorAll('.sexe-btn').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.sexe-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('sexe').value = btn.dataset.sexe;
+  }
+});
+
+// Photo
+document.getElementById('photo').onchange = e => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    document.getElementById('preview').src = reader.result;
+    document.getElementById('preview').style.display = 'block';
+    localStorage.setItem('tempPhoto', reader.result);
+  }
+  reader.readAsDataURL(file);
+}
+
+// Enter pour envoyer
+document.getElementById('msg').onkeypress = e => {
+  if(e.key === 'Enter') envoyer();
+}
+
+function sInscrire(){
+  const nom = document.getElementById('nom').value.trim();
+  const sexe = document.getElementById('sexe').value;
+  const photo = localStorage.getItem('tempPhoto');
+
+  if(!nom) return alert('❌ Mets ton prénom');
+  if(!sexe) return alert('❌ Choisis Fille ou Garçon');
+  if(!photo) return alert('❌ Ajoute une photo');
+
+  user = {id: Date.now(), nom, sexe, photo, chatAvec: null, groupe: null};
+  localStorage.setItem('k_user', JSON.stringify(user));
+  localStorage.removeItem('tempPhoto');
+
+  rejoindreGroupe();
+  showPage('page-lobby');
+}
+
+function rejoindreGroupe(){
+  let groupes = JSON.parse(localStorage.getItem('k_groupes')) || [];
+  let groupe = groupes.find(g => {
+    if(user.sexe === 'fille') return g.filles.length < 5;
+    return g.garcons.length < 5;
+  });
+
+  if(!groupe){
+    groupe = {id: Date.now(), filles: [], garcons: []};
+    groupes.push(groupe);
+  }
+
+  const dejaDedans = groupe.filles.find(u => u.id === user.id) || groupe.garcons.find(u => u.id === user.id);
+
+  if(!dejaDedans){
+    user.sexe === 'fille'? groupe.filles.push(user) : groupe.garcons.push(user);
+    user.groupe = groupe.id;
+    localStorage.setItem('k_user', JSON.stringify(user));
+  }
+
+  localStorage.setItem('k_groupes', JSON.stringify(groupes));
+  groupeActif = groupe;
+  afficherGroupes();
+}
+
+function afficherGroupes(){
+  const div = document.getElementById('groupes');
+  const groupes = JSON.parse(localStorage.getItem('k_groupes')) || [];
+
+  div.innerHTML = groupes.map(g => {
+    const complet = g.filles.length === 5 && g.garcons.length === 5;
+    const opposés = user.sexe === 'fille'? g.garcons : g.filles;
+
+    return `
+    <div class="groupe" onclick="${complet? `entrerChat(${g.id})` : `alert('⏳ ${g.filles.length}/5 filles, ${g.garcons.length}/5 garçons')`}">
+      <h3>Groupe #${g.id.toString().slice(-4)}</h3>
+      <p>${g.filles.length}/5 filles • ${g.garcons.length}/5 garçons ${complet? '✅' : ''}</p>
+      <div class="avatars">
+        ${opposés.slice(0,5).map(f => `<img class="avatar" src="${f.photo}">`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function entrerChat(id){
+  groupeActif = JSON.parse(localStorage.getItem('k_groupes')).find(g => g.id == id);
+  const opposés = user.sexe === 'fille'? groupeActif.garcons : groupeActif.filles;
+  const dispo = opposés.find(m =>!m.chatAvec || m.chatAvec === user.id);
+
+  if(!dispo) return alert('Tout le monde est occupé ❤️');
+  ouvrirChat(dispo.id);
+  showPage('page-chat');
+}
+
+function ouvrirChat(idMembre){
+  const membre = [...groupeActif.filles,...groupeActif.garcons].find(u => u.id === idMembre);
+
+  if(membre.chatAvec && membre.chatAvec!== user.id){
+    return alert(membre.nom + ' est occupé ❤️');
+  }
+
+  if(!membre.chatAvec){
+    membre.chatAvec = user.id;
+    user.chatAvec = membre.id;
+    sauverGroupe();
+  }
+
+  chatActif = membre;
+  document.getElementById('chat-photo').src = membre.photo;
+  document.getElementById('chat-nom').innerText = membre.nom;
+  afficherMessages();
+}
+
+function envoyer(){
+  const texte = document.getElementById('msg').value.trim();
+  if(!texte ||!chatActif) return;
+
+  const key = `chat_${Math.min(user.id, chatActif.id)}_${Math.max(user.id, chatActif.id)}`;
+  let msgs = JSON.parse(localStorage.getItem(key)) || [];
+  msgs.push({de: user.id, texte, time: Date.now()});
+  localStorage.setItem(key, JSON.stringify(msgs));
+
+  document.getElementById('msg').value = '';
+  afficherMessages();
+}
+
+function afficherMessages(){
+  if(!chatActif) return;
+  const key = `chat_${Math.min(user.id, chatActif.id)}_${Math.max(user.id, chatActif.id)}`;
+  const msgs = JSON.parse(localStorage.getItem(key)) || [];
+
+  document.getElementById('messages').innerHTML = msgs.map(m => {
+    const heure = new Date(m.time).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'});
+    const check = m.de === user.id? '<span class="check">✓</span>' : '';
+    return `<div class="msg ${m.de === user.id? 'moi' : 'autre'}"><div class="bulle">${m.texte}<span class="heure">${heure}${check}</span></div></div>`;
+  }).join('');
+
+  document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+}
+
+function sauverGroupe(){
+  let groupes = JSON.parse(localStorage.getItem('k_groupes'));
+  const idx = groupes.findIndex(g => g.id === groupeActif.id);
+  groupes[idx] = groupeActif;
+  localStorage.setItem('k_groupes', JSON.stringify(groupes));
+  localStorage.setItem('k_user', JSON.stringify(user));
+}
+
+function retourLobby(){
+  chatActif = null;
+  showPage('page-lobby');
+  afficherGroupes();
+}
+
+function deconnecter(){
+  if(confirm('Déconnexion?')) {
+    localStorage.clear();
+    user = null;
+    location.reload();
+  }
+}
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+window.onload = () => {
+  user = JSON.parse(localStorage.getItem('k_user'));
+  if(user && user.groupe) {
+    groupeActif = JSON.parse(localStorage.getItem('k_groupes'))?.find(g => g.id == user.groupe);
+    if(groupeActif) {
+      showPage('page-lobby');
+      afficherGroupes();
+    }
+  }
+}
+</script>
 </body>
 </html>
