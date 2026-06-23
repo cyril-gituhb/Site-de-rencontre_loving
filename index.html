@@ -1,88 +1,66 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KELVIN LOVING 🏖️</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Icones FontAwesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>kELVIN Loving ❤️</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- SECTION INSCRIPTION -->
-    <div id="auth-page">
-        <h1 class="main-title">KELVIN LOVING 🏖️</h1>
-        
-        <div class="heart-wrapper">
-            <form id="register-form">
-                <div class="heart-shape">
-                    <div class="form-content">
-                        <input type="text" id="reg-name" placeholder="Nom Complet" required>
-                        <input type="email" id="reg-email" placeholder="Email" required>
-                        <input type="tel" id="reg-phone" placeholder="Numéro" required>
-                        
-                        <div class="row">
-                            <select id="reg-gender" required>
-                                <option value="">Sexe</option>
-                                <option value="Fille">Fille 🚺</option>
-                                <option value="Garçon">Garçon 🚹</option>
-                            </select>
-                            <label for="reg-photo" class="custom-file-upload">Photo 📸</label>
-                            <input type="file" id="reg-photo" accept="image/*">
-                        </div>
-                        
-                        <input type="password" id="reg-pass" placeholder="Mot de passe" required>
-                        
-                        <button type="submit" id="btn-rejoindre">REJOINDRE</button>
-                    </div>
-                </div>
-            </form>
-        </div>
+<!-- PAGE 1 : INSCRIPTION -->
+<section id="page-signup" class="page active">
+  <div class="card">
+    <h1>kELVIN Loving</h1>
+    <p class="subtitle">Vacances entre étudiants ❤️</p>
+    
+    <input id="nom" placeholder="Ton prénom" maxlength="15">
+    
+    <div class="sexe-box">
+      <button type="button" class="sexe-btn" data-sexe="fille">👩 Fille</button>
+      <button type="button" class="sexe-btn" data-sexe="garcon">👨 Garçon</button>
     </div>
+    <input type="hidden" id="sexe">
 
-    <!-- SECTION CHAT -->
-    <div id="chat-page" class="hidden">
-        <div class="app-container">
-            <!-- Barre Latérale -->
-            <aside class="sidebar">
-                <div class="my-profile">
-                    <img src="https://via.placeholder.com/40" id="user-img-top">
-                    <span id="user-name-top">Moi</span>
-                </div>
-                
-                <div class="tabs">
-                    <button class="tab-btn active" onclick="switchView('groups')">Groupes</button>
-                    <button class="tab-btn" onclick="switchView('private')">Privé</button>
-                </div>
+    <label class="upload">
+      <input type="file" id="photo" accept="image/*">
+      <span>📷 Ajouter ta photo</span>
+    </label>
+    <img id="preview">
 
-                <div id="sidebar-list">
-                    <!-- Les groupes ou gens s'afficheront ici -->
-                </div>
-            </aside>
+    <button onclick="sInscrire()">Rejoindre un groupe</button>
+    <p class="note">5 filles + 5 garçons par groupe. Chat privé 1vs1 seulement.</p>
+  </div>
+</section>
 
-            <!-- Fenêtre de Chat -->
-            <main class="chat-area">
-                <header class="chat-header">
-                    <div id="target-info">
-                        <strong id="chat-title">Sélectionnez une discussion</strong>
-                        <p id="chat-status"></p>
-                    </div>
-                </header>
+<!-- PAGE 2 : LOBBY -->
+<section id="page-lobby" class="page">
+  <header>
+    <h1>Groupes de 10</h1>
+    <button onclick="deconnecter()">Déconnecter</button>
+  </header>
+  <div id="groupes"></div>
+</section>
 
-                <div class="messages-container" id="messages-box">
-                    <!-- Fond avec ton image ici -->
-                </div>
-
-                <div class="input-bar">
-                    <button class="action-btn"><i class="fas fa-microphone"></i></button>
-                    <input type="text" id="msg-input" placeholder="Écrire un message...">
-                    <button class="send-btn" id="send-msg"><i class="fas fa-paper-plane"></i></button>
-                </div>
-            </main>
-        </div>
+<!-- PAGE 3 : CHAT -->
+<section id="page-chat" class="page">
+  <div class="chat-container">
+    <div class="sidebar">
+      <h3>Choisis ton crush ❤️</h3>
+      <div id="membres"></div>
+      <button class="back" onclick="retourLobby()">← Retour lobby</button>
     </div>
+    <div class="chat-main">
+      <div class="chat-header" id="chat-header">Sélectionne une personne</div>
+      <div class="messages" id="messages"></div>
+      <div class="input-box">
+        <input id="msg" placeholder="Écris ton message..." onkeypress="if(event.key==='Enter') envoyer()">
+        <button onclick="envoyer()">Envoyer</button>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <script src="script.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
