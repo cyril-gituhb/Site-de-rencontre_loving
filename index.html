@@ -3,18 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>kELVIN Loving ❤️</title>
+<title>kELVIN Loving</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- PAGE 1 : INSCRIPTION -->
+<!-- SIGNUP -->
 <section id="page-signup" class="page active">
+  <div class="whatsapp-header">kELVIN Loving</div>
   <div class="card">
-    <h1>kELVIN Loving</h1>
-    <p class="subtitle">Vacances entre étudiants ❤️</p>
-    
-    <input id="nom" placeholder="Ton prénom" maxlength="15">
+    <h2>Bienvenue ❤️</h2>
+    <input id="nom" placeholder="Ton prénom">
     
     <div class="sexe-box">
       <button type="button" class="sexe-btn" data-sexe="fille">👩 Fille</button>
@@ -22,41 +21,42 @@
     </div>
     <input type="hidden" id="sexe">
 
-    <label class="upload">
+    <label class="upload">📷 Photo de profil
       <input type="file" id="photo" accept="image/*">
-      <span>📷 Ajouter ta photo</span>
     </label>
     <img id="preview">
 
-    <button onclick="sInscrire()">Rejoindre un groupe</button>
-    <p class="note">5 filles + 5 garçons par groupe. Chat privé 1vs1 seulement.</p>
+    <button onclick="sInscrire()">Continuer</button>
+    <p class="note">5 filles + 5 garçons par groupe</p>
   </div>
 </section>
 
-<!-- PAGE 2 : LOBBY -->
+<!-- LOBBY -->
 <section id="page-lobby" class="page">
-  <header>
-    <h1>Groupes de 10</h1>
-    <button onclick="deconnecter()">Déconnecter</button>
-  </header>
-  <div id="groupes"></div>
+  <div class="whatsapp-header">
+    <span>Groupes kELVIN</span>
+    <button onclick="deconnecter()">Déco</button>
+  </div>
+  <div id="groupes" class="chat-list"></div>
 </section>
 
-<!-- PAGE 3 : CHAT -->
+<!-- CHAT -->
 <section id="page-chat" class="page">
   <div class="chat-container">
-    <div class="sidebar">
-      <h3>Choisis ton crush ❤️</h3>
-      <div id="membres"></div>
-      <button class="back" onclick="retourLobby()">← Retour lobby</button>
-    </div>
-    <div class="chat-main">
-      <div class="chat-header" id="chat-header">Sélectionne une personne</div>
-      <div class="messages" id="messages"></div>
-      <div class="input-box">
-        <input id="msg" placeholder="Écris ton message..." onkeypress="if(event.key==='Enter') envoyer()">
-        <button onclick="envoyer()">Envoyer</button>
+    <div class="chat-header" id="chat-header">
+      <button onclick="retourLobby()">←</button>
+      <img id="chat-photo">
+      <div>
+        <b id="chat-nom"></b>
+        <small id="chat-status">en ligne</small>
       </div>
+    </div>
+    
+    <div class="messages" id="messages"></div>
+    
+    <div class="input-box">
+      <input id="msg" placeholder="Tape un message" onkeypress="if(event.key==='Enter') envoyer()">
+      <button onclick="envoyer()">➤</button>
     </div>
   </div>
 </section>
