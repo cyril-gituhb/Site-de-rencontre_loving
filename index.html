@@ -1,328 +1,290 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>kELVIN Loving 🏖️</title>
-<!-- CHARGEMENT DE SUPABASE -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-/* --- TON STYLE WHATSAPP --- */
-* {margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Roboto,sans-serif}
-body {background:#e5ddd5;height:100vh;overflow:hidden; width: 100vw;}
-.page {display:none;height:100vh;flex-direction:column; width: 100%;}
-.page.active {display:flex}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>kELVIN Loving 🏖️</title>
+    <!-- Chargement de Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* --- THÈME & DESIGN --- */
+        :root {
+            --primary: #128C7E;
+            --secondary: #25D366;
+            --whatsapp-bg: #e5ddd5;
+            --white: #ffffff;
+            --boy: #0077b6;
+            --girl: #ff4d6d;
+        }
 
-.whatsapp-header {
-  background:#128C7E;color:white;padding:16px 20px;font-size:20px;font-weight:600;
-  display:flex;justify-content:space-between;align-items:center;flex-shrink:0
-}
-.whatsapp-header button {
-  background:rgba(255,255,255,0.2);border:none;color:white;font-size:13px;
-  cursor:pointer;padding:6px 12px;border-radius:20px
-}
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+        body { background: #90e0ef; height: 100vh; width: 100vw; overflow: hidden; display: flex; justify-content: center; align-items: center; }
 
-#page-signup { background:linear-gradient(135deg,#128C7E 0%,#25D366 100%); justify-content:center;align-items:center }
-.card { background:white;padding:30px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.3);max-width:380px;width:90%;display:flex;flex-direction:column;gap:15px }
-.card h2 {color:#128C7E;text-align:center;}
-#nom {padding:14px;border:1px solid #ddd;border-radius:8px;width:100%}
+        #app {
+            width: 100vw; height: 100vh; background: white; display: flex; flex-direction: column; position: relative;
+        }
 
-.sexe-box {display:flex;gap:10px}
-.sexe-btn { flex:1;padding:14px;border:2px solid #e0e0e0;background:white;border-radius:8px;cursor:pointer;font-size:28px; }
-.sexe-btn.active {background:#DCF8C6;border-color:#128C7E;}
+        @media (min-width: 600px) {
+            #app { width: 400px; height: 90vh; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 4px solid #333; }
+        }
 
-.upload { background:#f8f9fa;text-align:center;border:2px dashed #128C7E;color:#128C7E;padding:14px;border-radius:8px;cursor:pointer; }
-#photo {display:none}
-#preview { width:80px;height:80px;border-radius:50%;margin:0 auto;display:none;object-fit:cover;border:3px solid #128C7E }
+        /* --- NAVIGATION --- */
+        nav {
+            background: var(--primary); color: white; padding: 12px; display: flex; justify-content: space-between; align-items: center; min-height: 65px;
+        }
+        .logo { font-weight: bold; font-size: 1rem; }
+        .nav-links { display: flex; gap: 8px; }
+        .nav-links button { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 6px 10px; border-radius: 20px; font-size: 11px; cursor: pointer; }
 
-.card button { background:#25D366;color:white;border:none;padding:15px;border-radius:8px;font-weight:bold;cursor:pointer }
+        /* --- VUES --- */
+        .view { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #f0f2f5; }
+        .hidden { display: none !important; }
 
-/* LOBBY */
-.lobby-stats { background:#075E54;color:white;padding:10px;text-align:center;font-size:13px }
-#groupes {flex:1;overflow-y:auto;background:white}
-.groupe { padding:20px;border-bottom:1px solid #eee; }
-.membres-liste { display:flex;flex-wrap:wrap;gap:10px;margin-top:10px }
-.membre { display:flex;flex-direction:column;align-items:center; width: 50px;}
-.avatar { width:45px;height:45px;border-radius:50%;object-fit:cover;border:2px solid #ddd }
-.avatar.occupe { border-color: #ff4b2b; }
-.avatar.dispo { border-color: #25D366; }
+        /* --- SIGNUP CARD --- */
+        #page-signup { background: linear-gradient(135deg, #128C7E 0%, #25D366 100%); justify-content: center; align-items: center; padding: 20px; }
+        .card { background: white; padding: 25px; border-radius: 15px; width: 100%; max-width: 350px; display: flex; flex-direction: column; gap: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .card h2 { color: var(--primary); text-align: center; }
+        input, select { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; width: 100%; }
+        .sexe-box { display: flex; gap: 10px; }
+        .sexe-btn { flex: 1; padding: 12px; border: 2px solid #eee; background: white; border-radius: 8px; cursor: pointer; font-size: 20px; }
+        .sexe-btn.active { border-color: var(--primary); background: #dcf8c6; }
+        .btn-main { background: var(--secondary); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-/* CHAT */
-.chat-container { flex:1;display:flex;flex-direction:column;background:#e5ddd5 url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); }
-.chat-header { background:#128C7E;color:white;padding:10px;display:flex;align-items:center;gap:10px; }
-#chat-photo { width:40px;height:40px;border-radius:50%; }
-.messages { flex:1;padding:15px;overflow-y:auto;display:flex;flex-direction:column;gap:8px }
-.bulle { max-width:75%;padding:8px 12px;border-radius:8px;font-size:15px;box-shadow:0 1px 1px rgba(0,0,0,0.1); line-height: 1.4; }
-.msg.moi { align-self: flex-end; background: #DCF8C6; }
-.msg.autre { align-self: flex-start; background: white; }
-.input-box { display:flex;padding:10px;background:#f0f0f0;gap:8px; }
-#msg { flex:1;padding:12px;border-radius:25px;border:none;outline:none }
-.btn-send { width:45px;height:45px;border-radius:50%;background:#128C7E;color:white;border:none;cursor:pointer }
-</style>
+        /* --- LOBBY (GROUPES) --- */
+        #groupes { flex: 1; overflow-y: auto; padding: 15px; }
+        .stats-bar { background: #075E54; color: white; padding: 8px; text-align: center; font-size: 12px; }
+        .groupe { background: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-bottom: 3px solid #ddd; }
+        .membres-liste { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .membre { display: flex; flex-direction: column; align-items: center; width: 55px; cursor: pointer; }
+        .avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid #ccc; transition: 0.2s; }
+        .avatar.dispo { border-color: var(--secondary); }
+        .avatar.occupe { border-color: #ff4b2b; }
+        .membre small { font-size: 10px; text-align: center; overflow: hidden; width: 100%; white-space: nowrap; }
+
+        /* --- CHAT --- */
+        .chat-container { flex: 1; display: flex; flex-direction: column; background: var(--whatsapp-bg) url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); }
+        .chat-header { background: var(--primary); color: white; padding: 10px; display: flex; align-items: center; gap: 10px; }
+        #chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+        .msg { max-width: 75%; padding: 8px 12px; border-radius: 8px; font-size: 14px; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
+        .msg.moi { align-self: flex-end; background: #dcf8c6; }
+        .msg.autre { align-self: flex-start; background: white; }
+        .input-box { background: #f0f0f0; padding: 10px; display: flex; gap: 8px; }
+        #msg-input { flex: 1; padding: 12px; border-radius: 25px; border: none; outline: none; }
+    </style>
 </head>
 <body>
 
-<!-- PAGE INSCRIPTION -->
-<section id="page-signup" class="page active">
-  <div class="card">
-    <h2>kELVIN Loving ❤️</h2>
-    <input id="nom" type="text" placeholder="Ton prénom étudiant">
-    <div class="sexe-box">
-      <button type="button" class="sexe-btn" data-sexe="fille">👩 Fille</button>
-      <button type="button" class="sexe-btn" data-sexe="garcon">👨 Garçon</button>
-    </div>
-    <input type="hidden" id="sexe" value="">
-    <label class="upload">📷 Photo de profil
-      <input type="file" id="photo" accept="image/*">
-    </label>
-    <center><img id="preview"></center>
-    <button type="button" onclick="sInscrire()">Commencer l'aventure</button>
-  </div>
-</section>
+<div id="app">
+    <nav id="nav-bar" class="hidden">
+        <div class="logo">KELVIN LOVING 🏖️</div>
+        <div class="nav-links">
+            <button onclick="showView('page-lobby')">👥 Groupes</button>
+            <button onclick="deconnecter()">Quitter</button>
+        </div>
+    </nav>
 
-<!-- PAGE LOBBY (LISTE GROUPES) -->
-<section id="page-lobby" class="page">
-  <div class="whatsapp-header">
-    <span>kELVIN Groupes</span>
-    <button onclick="deconnecter()">Quitter</button>
-  </div>
-  <div class="lobby-stats" id="stats">Connexion...</div>
-  <div id="groupes"></div>
-</section>
+    <!-- INSCRIPTION -->
+    <section id="page-signup" class="view">
+        <div class="card">
+            <h2>Bienvenue ❤️</h2>
+            <input id="nom" type="text" placeholder="Ton prénom étudiant">
+            <div class="sexe-box">
+                <button type="button" class="sexe-btn" id="btn-fille" onclick="setSexe('fille')">👩 Fille</button>
+                <button type="button" class="sexe-btn" id="btn-garcon" onclick="setSexe('garcon')">👨 Garçon</button>
+            </div>
+            <label style="font-size: 12px; color: #666;">Photo de profil :</label>
+            <input type="file" id="photo" accept="image/*" onchange="previewPhoto(event)">
+            <center><img id="preview" style="width:70px; height:70px; border-radius:50%; display:none; object-fit:cover; border:2px solid var(--primary)"></center>
+            <button type="button" class="btn-main" onclick="sInscrire()">Commencer l'aventure</button>
+        </div>
+    </section>
 
-<!-- PAGE CHAT -->
-<section id="page-chat" class="page">
-  <div class="chat-container">
-    <div class="chat-header">
-      <button style="background:none;border:none;color:white;font-size:24px;" onclick="retourLobby()">←</button>
-      <img id="chat-photo" src="">
-      <div>
-        <b id="chat-nom"></b><br>
-        <small>en ligne</small>
-      </div>
-    </div>
-    <div class="messages" id="messages"></div>
-    <div class="input-box">
-      <input id="msg" type="text" placeholder="Écrire...">
-      <button class="btn-send" onclick="envoyer()">➤</button>
-    </div>
-  </div>
-</section>
+    <!-- LOBBY -->
+    <section id="page-lobby" class="view hidden">
+        <div class="stats-bar" id="stats">Connexion en cours...</div>
+        <div id="groupes"></div>
+    </section>
+
+    <!-- CHAT -->
+    <section id="page-chat" class="view hidden">
+        <div class="chat-container">
+            <div class="chat-header">
+                <button onclick="showView('page-lobby')" style="background:none; border:none; color:white; font-size:20px; cursor:pointer">←</button>
+                <img id="chat-photo" style="width:40px; height:40px; border-radius:50%;">
+                <b id="chat-nom">Nom</b>
+            </div>
+            <div id="chat-messages"></div>
+            <div class="input-box">
+                <input id="msg-input" type="text" placeholder="Tape un message">
+                <button onclick="envoyer()" style="background:var(--primary); color:white; border:none; width:45px; height:45px; border-radius:50%; cursor:pointer">➤</button>
+            </div>
+        </div>
+    </section>
+</div>
 
 <script>
-// CONFIGURATION SUPABASE
-const SUPABASE_URL = "https://doovevgkmarozjululkr.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvb3ZldmdrbWFyb3pqdWx1bGtyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyOTE3MzMsImV4cCI6MjA5Njg2NzczM30.Iao5_dnv4j71IPSpy-rdWGR0NPzDEUBMERPFVE8o1G0";
-const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // CONFIGURATION SUPABASE
+    const SUPABASE_URL = "https://doovevgkmarozjululkr.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvb3ZldmdrbWFyb3pqdWx1bGtyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyOTE3MzMsImV4cCI6MjA5Njg2NzczM30.Iao5_dnv4j71IPSpy-rdWGR0NPzDEUBMERPFVE8o1G0";
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let user = null;
-let chatActif = null;
+    let user = null;
+    let chatActif = null;
+    let selectedSexe = "";
 
-// Gestion Sexe
-document.querySelectorAll('.sexe-btn').forEach(btn => {
-  btn.onclick = () => {
-    document.querySelectorAll('.sexe-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('sexe').value = btn.dataset.sexe;
-  }
-});
-
-// Photo Preview
-document.getElementById('photo').onchange = e => {
-  const reader = new FileReader();
-  reader.onload = () => {
-    document.getElementById('preview').src = reader.result;
-    document.getElementById('preview').style.display = 'block';
-  }
-  reader.readAsDataURL(e.target.files[0]);
-}
-
-// 1. INSCRIPTION
-async function sInscrire() {
-  const nom = document.getElementById('nom').value.trim();
-  const sexe = document.getElementById('sexe').value;
-  const photoImg = document.getElementById('preview').src;
-
-  if(!nom || !sexe || !photoImg) return alert("Remplis tout ! ❤️");
-
-  // Créer un ID unique pour cette session (vu qu'on n'utilise pas l'auth email complète)
-  const userId = "user_" + Date.now();
-  
-  const newUser = { id_temp: userId, nom, sexe, photo: photoImg, is_online: true };
-
-  // On cherche un groupe libre
-  const { data: groups } = await _supabase.from('groups').select('*');
-  let targetGroupId = null;
-
-  for (let g of groups) {
-    const { count } = await _supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('groupe_id', g.id).eq('sexe', sexe);
-    if (count < 5) {
-      targetGroupId = g.id;
-      break;
+    function setSexe(s) {
+        selectedSexe = s;
+        document.getElementById('btn-fille').classList.toggle('active', s === 'fille');
+        document.getElementById('btn-garcon').classList.toggle('active', s === 'garcon');
     }
-  }
 
-  // Si aucun groupe n'a de place, on en crée un
-  if (!targetGroupId) {
-    const { data: newG } = await _supabase.from('groups').insert({nom: 'Amphi kELVIN'}).select();
-    targetGroupId = newG[0].id;
-  }
+    function previewPhoto(event) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            const img = document.getElementById('preview');
+            img.src = reader.result;
+            img.style.display = 'block';
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
 
-  // Sauvegarder dans Profiles (simulation de session)
-  // Note: On utilise un ID aléatoire car on n'utilise pas Supabase Auth ici pour simplifier
-  const { data, error } = await _supabase.from('profiles').insert([{
-    nom, sexe, photo: photoImg, groupe_id: targetGroupId, is_online: true
-  }]).select();
+    // --- INSCRIPTION CORRIGÉE ---
+    async function sInscrire() {
+        const nom = document.getElementById('nom').value.trim();
+        const photo = document.getElementById('preview').src;
 
-  if(error) return alert("Erreur base de données");
+        if (!nom || !selectedSexe || photo.includes('display:none')) {
+            return alert("❌ Remplis tout et ajoute une photo !");
+        }
 
-  user = data[0];
-  localStorage.setItem('k_user_id', user.id);
-  
-  showPage('page-lobby');
-  startLobbyRealtime();
-}
+        try {
+            // 1. Récupérer les groupes
+            let { data: groups } = await _supabase.from('groups').select('*');
+            
+            if (!groups || groups.length === 0) {
+                const { data: newG } = await _supabase.from('groups').insert({nom: 'Amphi kELVIN'}).select();
+                groups = newG;
+            }
 
-// 2. LOBBY & GROUPES
-async function renderLobby() {
-  const { data: groups } = await _supabase.from('groups').select('*');
-  const { data: allUsers } = await _supabase.from('profiles').select('*');
+            // 2. Trouver un groupe avec de la place (5M/5F)
+            let targetGroupId = groups[0].id;
+            for (let g of groups) {
+                const { count } = await _supabase.from('profiles').select('*', { count: 'exact', head: true })
+                    .eq('groupe_id', g.id).eq('sexe', selectedSexe);
+                if (count < 5) {
+                    targetGroupId = g.id;
+                    break;
+                }
+            }
 
-  document.getElementById('stats').innerText = `🔵 ${allUsers.length} Étudiants en ligne`;
+            // 3. Créer le profil
+            const { data, error } = await _supabase.from('profiles').insert([{
+                nom: nom, sexe: selectedSexe, photo: photo, groupe_id: targetGroupId
+            }]).select();
 
-  const container = document.getElementById('groupes');
-  container.innerHTML = groups.map(g => {
-    const members = allUsers.filter(u => u.groupe_id === g.id);
-    const filles = members.filter(u => u.sexe === 'fille');
-    const garcons = members.filter(u => u.sexe === 'garcon');
+            if (error) throw error;
 
-    return `
-      <div class="groupe">
-        <div style="display:flex; justify-content:space-between">
-            <b>${g.nom} #${g.id.slice(0,4)}</b>
-            <span>${filles.length}♀️ / ${garcons.length}♂️</span>
-        </div>
-        <div class="membres-liste">
-          ${members.map(m => `
-            <div class="membre" onclick="clicMembre('${m.id}')">
-              <img class="avatar ${m.chat_avec ? 'occupe' : 'dispo'}" src="${m.photo}">
-              <small>${m.nom === user.nom ? 'Moi' : m.nom}</small>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    `;
-  }).join('');
-}
+            user = data[0];
+            localStorage.setItem('k_user_id', user.id);
+            showView('page-lobby');
+            initRealtime();
 
-async function clicMembre(id) {
-  if (id === user.id) return;
-  
-  const { data: cible } = await _supabase.from('profiles').select('*').eq('id', id).single();
+        } catch (err) {
+            console.error(err);
+            alert("Erreur : " + err.message);
+        }
+    }
 
-  // RÈGLE : Pas de Garçon-Garçon ou Fille-Fille
-  if (cible.sexe === user.sexe) {
-    return alert("🏖️ kELVIN Loving : Tu ne peux parler qu'aux personnes du sexe opposé !");
-  }
+    // --- LOBBY ---
+    async function renderLobby() {
+        const { data: allUsers } = await _supabase.from('profiles').select('*');
+        const { data: groups } = await _supabase.from('groups').select('*');
 
-  // RÈGLE : Déjà occupé
-  if (cible.chat_avec && cible.chat_avec !== user.id) {
-    return alert("Cette personne est déjà en discussion ❤️");
-  }
+        document.getElementById('stats').innerText = `🔵 ${allUsers.length} Étudiants connectés`;
 
-  // RÈGLE : Moi je suis occupé
-  if (user.chat_avec && user.chat_avec !== cible.id) {
-    return alert("Tu as déjà une discussion en cours !");
-  }
+        const container = document.getElementById('groupes');
+        container.innerHTML = groups.map(g => {
+            const members = allUsers.filter(u => u.groupe_id === g.id);
+            return `
+                <div class="groupe">
+                    <b>${g.nom}</b> <small>(${members.length}/10)</small>
+                    <div class="membres-liste">
+                        ${members.map(m => `
+                            <div class="membre" onclick="clicMembre('${m.id}')">
+                                <img class="avatar ${m.chat_avec ? 'occupe' : 'dispo'}" src="${m.photo}">
+                                <small>${m.nom}</small>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
 
-  // Activer le chat
-  await _supabase.from('profiles').update({ chat_avec: cible.id }).eq('id', user.id);
-  await _supabase.from('profiles').update({ chat_avec: user.id }).eq('id', cible.id);
-  
-  user.chat_avec = cible.id;
-  chatActif = cible;
-  
-  openChat();
-}
+    async function clicMembre(id) {
+        if (id == user.id) return;
+        const { data: cible } = await _supabase.from('profiles').select('*').eq('id', id).single();
 
-// 3. CHAT
-function openChat() {
-  document.getElementById('chat-nom').innerText = chatActif.nom;
-  document.getElementById('chat-photo').src = chatActif.photo;
-  showPage('page-chat');
-  loadMessages();
-  subscribeToMessages();
-}
+        if (cible.sexe === user.sexe) return alert("Interdit ! Seulement Garçon + Fille 🏖️");
+        if (cible.chat_avec && cible.chat_avec !== user.id) return alert("Déjà occupé(e) ❤️");
 
-async function loadMessages() {
-  const { data } = await _supabase.from('messages')
-    .select('*')
-    .or(`and(expediteur_id.eq.${user.id},destinataire_id.eq.${chatActif.id}),and(expediteur_id.eq.${chatActif.id},destinataire_id.eq.${user.id})`)
-    .order('created_at', { ascending: true });
+        await _supabase.from('profiles').update({ chat_avec: cible.id }).eq('id', user.id);
+        chatActif = cible;
+        showView('page-chat');
+        loadMessages();
+    }
 
-  const container = document.getElementById('messages');
-  container.innerHTML = data.map(m => `
-    <div class="msg ${m.expediteur_id === user.id ? 'moi' : 'autre'}">
-      <div class="bulle">${m.texte}</div>
-    </div>
-  `).join('');
-  container.scrollTop = container.scrollHeight;
-}
+    // --- CHAT ---
+    async function loadMessages() {
+        if (!chatActif) return;
+        document.getElementById('chat-nom').innerText = chatActif.nom;
+        document.getElementById('chat-photo').src = chatActif.photo;
 
-async function envoyer() {
-  const input = document.getElementById('msg');
-  const texte = input.value.trim();
-  if (!texte) return;
+        const { data } = await _supabase.from('messages').select('*')
+            .or(`and(expediteur_id.eq.${user.id},destinataire_id.eq.${chatActif.id}),and(expediteur_id.eq.${chatActif.id},destinataire_id.eq.${user.id})`)
+            .order('created_at', { ascending: true });
 
-  await _supabase.from('messages').insert({
-    expediteur_id: user.id,
-    destinataire_id: chatActif.id,
-    texte: texte
-  });
+        const div = document.getElementById('chat-messages');
+        div.innerHTML = data.map(m => `
+            <div class="msg ${m.expediteur_id === user.id ? 'moi' : 'autre'}">${m.texte}</div>
+        `).join('');
+        div.scrollTop = div.scrollHeight;
+    }
 
-  input.value = "";
-  loadMessages();
-}
+    async function envoyer() {
+        const msg = document.getElementById('msg-input').value.trim();
+        if (!msg) return;
+        await _supabase.from('messages').insert({ expediteur_id: user.id, destinataire_id: chatActif.id, texte: msg });
+        document.getElementById('msg-input').value = "";
+        loadMessages();
+    }
 
-// 4. REALTIME
-function startLobbyRealtime() {
-  renderLobby();
-  _supabase.channel('public:profiles').on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, renderLobby).subscribe();
-}
+    // --- UTILS ---
+    function showView(id) {
+        document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+        document.getElementById('nav-bar').classList.toggle('hidden', id === 'page-signup');
+        if (id === 'page-lobby') renderLobby();
+    }
 
-function subscribeToMessages() {
-  _supabase.channel('public:messages').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, loadMessages).subscribe();
-}
+    function initRealtime() {
+        _supabase.channel('room1').on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, renderLobby).subscribe();
+        _supabase.channel('room2').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, loadMessages).subscribe();
+    }
 
-// UTILS
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-
-function retourLobby() {
-    showPage('page-lobby');
-}
-
-async function deconnecter() {
-    if(confirm("Quitter kELVIN Loving ?")) {
-        await _supabase.from('profiles').delete().eq('id', user.id);
+    async function deconnecter() {
+        if (user) await _supabase.from('profiles').delete().eq('id', user.id);
         localStorage.clear();
         location.reload();
     }
-}
 
-window.onload = async () => {
-    const savedId = localStorage.getItem('k_user_id');
-    if(savedId) {
-        const { data } = await _supabase.from('profiles').select('*').eq('id', savedId).single();
-        if(data) {
-            user = data;
-            showPage('page-lobby');
-            startLobbyRealtime();
+    window.onload = async () => {
+        const id = localStorage.getItem('k_user_id');
+        if (id) {
+            const { data } = await _supabase.from('profiles').select('*').eq('id', id).single();
+            if (data) { user = data; showView('page-lobby'); initRealtime(); }
         }
-    }
-}
+    };
 </script>
 </body>
 </html>
