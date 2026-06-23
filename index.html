@@ -3,288 +3,414 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>kELVIN Loving 🏖️</title>
-    <!-- Chargement de Supabase SDK -->
+    <title>KELVIN LOVING 🏖️</title>
+    <!-- SDK Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* --- THÈME & DESIGN --- */
+        /* --- DESIGN GLOBAL & WHATSAPP STYLE --- */
         :root {
             --primary: #128C7E;
             --secondary: #25D366;
             --whatsapp-bg: #e5ddd5;
-            --white: #ffffff;
             --boy: #0077b6;
             --girl: #ff4d6d;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
-        body { background: #90e0ef; height: 100vh; width: 100vw; overflow: hidden; display: flex; justify-content: center; align-items: center; }
-
-        #app {
-            width: 100vw; height: 100vh; background: white; display: flex; flex-direction: column; position: relative;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Helvetica, sans-serif; }
+        
+        body { 
+            background: #90e0ef; 
+            height: 100vh; 
+            width: 100vw; 
+            overflow: hidden; 
+            display: flex; 
+            justify-content: center; 
         }
 
+        #app { 
+            width: 100vw; 
+            height: 100vh; 
+            background: white; 
+            display: flex; 
+            flex-direction: column; 
+            position: relative;
+        }
+
+        /* Mode Bureau */
         @media (min-width: 600px) {
-            #app { width: 400px; height: 90vh; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 4px solid #333; }
+            #app { width: 400px; height: 92vh; border-radius: 20px; border: 5px solid #333; margin-top: 2vh; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         }
 
         /* --- NAVIGATION --- */
-        nav {
-            background: var(--primary); color: white; padding: 12px; display: flex; justify-content: space-between; align-items: center; min-height: 65px;
+        nav { 
+            background: var(--primary); 
+            color: white; 
+            padding: 10px 15px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            min-height: 65px; 
+            z-index: 10;
         }
-        .logo { font-weight: bold; font-size: 1rem; }
-        .nav-links { display: flex; gap: 8px; }
-        .nav-links button { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 6px 10px; border-radius: 20px; font-size: 11px; cursor: pointer; }
+        .logo { font-weight: bold; font-size: 1.1rem; }
+        .nav-links button { 
+            background: rgba(255,255,255,0.2); 
+            border: 1px solid white; 
+            color: white; 
+            padding: 6px 12px; 
+            border-radius: 20px; 
+            font-size: 11px; 
+            cursor: pointer; 
+        }
 
         /* --- VUES --- */
         .view { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #f0f2f5; }
         .hidden { display: none !important; }
 
-        /* --- SIGNUP CARD --- */
-        #page-signup { background: linear-gradient(135deg, #128C7E 0%, #25D366 100%); justify-content: center; align-items: center; padding: 20px; }
-        .card { background: white; padding: 25px; border-radius: 15px; width: 100%; max-width: 350px; display: flex; flex-direction: column; gap: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .card h2 { color: var(--primary); text-align: center; }
-        input, select { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; width: 100%; }
+        /* --- PAGE INSCRIPTION --- */
+        #page-signup { 
+            background: linear-gradient(135deg, #128C7E 0%, #25D366 100%); 
+            justify-content: center; 
+            align-items: center; 
+            padding: 20px; 
+        }
+        .card { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 15px; 
+            width: 100%; 
+            max-width: 340px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .card h2 { color: var(--primary); text-align: center; margin-bottom: 10px; }
+        input, select { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; outline: none; }
+        
         .sexe-box { display: flex; gap: 10px; }
-        .sexe-btn { flex: 1; padding: 12px; border: 2px solid #eee; background: white; border-radius: 8px; cursor: pointer; font-size: 20px; }
-        .sexe-btn.active { border-color: var(--primary); background: #dcf8c6; }
-        .btn-main { background: var(--secondary); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .sexe-btn { 
+            flex: 1; padding: 12px; border: 2px solid #eee; background: white; 
+            border-radius: 8px; cursor: pointer; font-size: 18px; transition: 0.2s;
+        }
+        .sexe-btn.active { border-color: var(--primary); background: #dcf8c6; transform: scale(1.05); }
 
-        /* --- LOBBY (GROUPES) --- */
-        #groupes { flex: 1; overflow-y: auto; padding: 15px; }
-        .stats-bar { background: #075E54; color: white; padding: 8px; text-align: center; font-size: 12px; }
-        .groupe { background: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-bottom: 3px solid #ddd; }
-        .membres-liste { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-        .membre { display: flex; flex-direction: column; align-items: center; width: 55px; cursor: pointer; }
-        .avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid #ccc; transition: 0.2s; }
-        .avatar.dispo { border-color: var(--secondary); }
-        .avatar.occupe { border-color: #ff4b2b; }
-        .membre small { font-size: 10px; text-align: center; overflow: hidden; width: 100%; white-space: nowrap; }
+        .btn-main { 
+            background: var(--secondary); color: white; border: none; 
+            padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 5px;
+        }
 
-        /* --- CHAT --- */
-        .chat-container { flex: 1; display: flex; flex-direction: column; background: var(--whatsapp-bg) url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); }
-        .chat-header { background: var(--primary); color: white; padding: 10px; display: flex; align-items: center; gap: 10px; }
+        /* --- PAGE LOBBY (GROUPES) --- */
+        .stats-bar { background: #075E54; color: white; padding: 10px; text-align: center; font-size: 13px; }
+        #groupes-list { flex: 1; overflow-y: auto; padding: 15px; }
+        .groupe-item { 
+            background: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-left: 5px solid var(--primary);
+        }
+        .membres-grid { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; }
+        .avatar-wrap { display: flex; flex-direction: column; align-items: center; width: 55px; cursor: pointer; }
+        .avatar-img { 
+            width: 48px; height: 48px; border-radius: 50%; object-fit: cover; 
+            border: 2px solid #ccc; transition: 0.3s;
+        }
+        .avatar-img.dispo { border-color: var(--secondary); }
+        .avatar-img.occupe { border-color: #ff4b2b; }
+        .avatar-wrap small { font-size: 10px; margin-top: 4px; text-align: center; width: 100%; overflow: hidden; }
+
+        /* --- PAGE CHAT --- */
+        .chat-container { 
+            flex: 1; display: flex; flex-direction: column; 
+            background: var(--whatsapp-bg) url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); 
+        }
+        .chat-header { 
+            background: var(--primary); color: white; padding: 10px 15px; 
+            display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+        }
         #chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-        .msg { max-width: 75%; padding: 8px 12px; border-radius: 8px; font-size: 14px; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
-        .msg.moi { align-self: flex-end; background: #dcf8c6; }
-        .msg.autre { align-self: flex-start; background: white; }
-        .input-box { background: #f0f0f0; padding: 10px; display: flex; gap: 8px; }
-        #msg-input { flex: 1; padding: 12px; border-radius: 25px; border: none; outline: none; }
+        .bulle { 
+            max-width: 80%; padding: 10px 14px; border-radius: 10px; font-size: 14px; 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1); line-height: 1.4;
+        }
+        .bulle.moi { align-self: flex-end; background: #dcf8c6; border-top-right-radius: 0; }
+        .bulle.autre { align-self: flex-start; background: white; border-top-left-radius: 0; }
+        
+        .input-area { background: #f0f0f0; padding: 10px; display: flex; gap: 10px; align-items: center; }
+        #text-input { flex: 1; padding: 12px 18px; border-radius: 25px; border: none; outline: none; font-size: 15px; }
+        .btn-send { 
+            background: var(--primary); color: white; border: none; 
+            width: 48px; height: 48px; border-radius: 50%; cursor: pointer; font-size: 20px;
+            display: flex; justify-content: center; align-items: center;
+        }
     </style>
 </head>
 <body>
 
 <div id="app">
-    <nav id="nav-bar" class="hidden">
+    <!-- Barre de Navigation -->
+    <nav id="navbar" class="hidden">
         <div class="logo">KELVIN LOVING 🏖️</div>
         <div class="nav-links">
-            <button onclick="showView('page-lobby')">👥 Groupes</button>
+            <button onclick="showView('page-lobby')">Groupes</button>
             <button onclick="deconnecter()">Quitter</button>
         </div>
     </nav>
 
-    <!-- INSCRIPTION -->
+    <!-- Écran d'Inscription -->
     <section id="page-signup" class="view">
         <div class="card">
             <h2>Bienvenue ❤️</h2>
             <input id="nom" type="text" placeholder="Ton prénom étudiant">
+            <input id="phone" type="tel" placeholder="Numéro de téléphone">
             <div class="sexe-box">
-                <button type="button" class="sexe-btn" id="btn-fille" onclick="setSexe('fille')">👩 Fille</button>
-                <button type="button" class="sexe-btn" id="btn-garcon" onclick="setSexe('garcon')">👨 Garçon</button>
+                <button type="button" class="sexe-btn" id="m-btn" onclick="setSex('garcon')">👨 Garçon</button>
+                <button type="button" class="sexe-btn" id="f-btn" onclick="setSex('fille')">👩 Fille</button>
             </div>
-            <label style="font-size: 12px; color: #666;">Photo de profil :</label>
-            <input type="file" id="photo" accept="image/*" onchange="previewPhoto(event)">
-            <center><img id="preview" style="width:70px; height:70px; border-radius:50%; display:none; object-fit:cover; border:2px solid var(--primary)"></center>
-            <button type="button" class="btn-main" onclick="sInscrire()">Commencer l'aventure</button>
+            <label style="font-size: 12px; color: #666; margin-top: 5px;">Photo de profil :</label>
+            <input type="file" id="photo-file" accept="image/*" onchange="previewPhoto(event)">
+            <center><img id="preview" style="width:80px; height:80px; border-radius:50%; display:none; object-fit:cover; border:3px solid var(--primary); margin-top: 5px;"></center>
+            <button type="button" class="btn-main" onclick="startAdventure()">Commencer l'aventure</button>
         </div>
     </section>
 
-    <!-- LOBBY -->
+    <!-- Écran Lobby (Liste des Groupes) -->
     <section id="page-lobby" class="view hidden">
-        <div class="stats-bar" id="stats">Connexion en cours...</div>
-        <div id="groupes"></div>
+        <div class="stats-bar" id="user-count">Recherche des étudiants...</div>
+        <div id="groupes-list"></div>
     </section>
 
-    <!-- CHAT -->
+    <!-- Écran Chat Privé -->
     <section id="page-chat" class="view hidden">
         <div class="chat-container">
             <div class="chat-header">
-                <button onclick="showView('page-lobby')" style="background:none; border:none; color:white; font-size:20px; cursor:pointer">←</button>
-                <img id="chat-photo" style="width:40px; height:40px; border-radius:50%;">
-                <b id="chat-nom">Nom</b>
+                <button onclick="showView('page-lobby')" style="background:none; border:none; color:white; font-size:24px; cursor:pointer;">←</button>
+                <img id="chat-img" style="width:40px; height:40px; border-radius:50%; border: 2px solid white; object-fit: cover;">
+                <div style="display:flex; flex-direction:column;">
+                    <b id="chat-name">Nom</b>
+                    <small>en ligne</small>
+                </div>
             </div>
-            <div id="chat-messages"></div>
-            <div class="input-box">
-                <input id="msg-input" type="text" placeholder="Tape un message">
-                <button onclick="envoyer()" style="background:var(--primary); color:white; border:none; width:45px; height:45px; border-radius:50%; cursor:pointer">➤</button>
+            <div id="messages-box"></div>
+            <div class="input-area">
+                <input id="text-input" type="text" placeholder="Écrire un message...">
+                <button class="btn-send" onclick="sendMsg()">➤</button>
             </div>
         </div>
     </section>
 </div>
 
 <script>
-    // CONFIGURATION SUPABASE
-    const SUPABASE_URL = "https://doovevgkmarozjululkr.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvb3ZldmdrbWFyb3pqdWx1bGtyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyOTE3MzMsImV4cCI6MjA5Njg2NzczM30.Iao5_dnv4j71IPSpy-rdWGR0NPzDEUBMERPFVE8o1G0";
-    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // --- CONFIGURATION SUPABASE ---
+    const S_URL = "https://doovevgkmarozjululkr.supabase.co";
+    const S_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvb3ZldmdrbWFyb3pqdWx1bGtyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyOTE3MzMsImV4cCI6MjA5Njg2NzczM30.Iao5_dnv4j71IPSpy-rdWGR0NPzDEUBMERPFVE8o1G0";
+    const sb = supabase.createClient(S_URL, S_KEY);
 
-    let user = null;
-    let chatActif = null;
-    let selectedSexe = "";
+    let me = null;
+    let target = null;
+    let mySex = "";
 
-    function setSexe(s) {
-        selectedSexe = s;
-        document.getElementById('btn-fille').classList.toggle('active', s === 'fille');
-        document.getElementById('btn-garcon').classList.toggle('active', s === 'garcon');
+    // Gestion du choix de Sexe
+    function setSex(s) {
+        mySex = s;
+        document.getElementById('m-btn').classList.toggle('active', s === 'garcon');
+        document.getElementById('f-btn').classList.toggle('active', s === 'fille');
     }
 
-    function previewPhoto(event) {
+    // Aperçu de la photo
+    function previewPhoto(e) {
         const reader = new FileReader();
         reader.onload = () => {
             const img = document.getElementById('preview');
             img.src = reader.result;
             img.style.display = 'block';
         };
-        reader.readAsDataURL(event.target.files[0]);
+        reader.readAsDataURL(e.target.files[0]);
     }
 
-    // --- INSCRIPTION CORRIGÉE ---
-    async function sInscrire() {
+    // --- INSCRIPTION (DÉMARRAGE) ---
+    async function startAdventure() {
         const nom = document.getElementById('nom').value.trim();
+        const phone = document.getElementById('phone').value.trim();
         const photo = document.getElementById('preview').src;
 
-        if (!nom || !selectedSexe || photo.includes('display:none')) {
-            return alert("❌ Remplis tout et ajoute une photo !");
+        if (!nom || !mySex || !photo || photo.includes('display:none')) {
+            return alert("❌ Remplis tout le formulaire et ajoute ta photo !");
         }
 
         try {
-            // 1. Récupérer les groupes
-            let { data: groups } = await _supabase.from('groups').select('*');
-            
+            // 1. Chercher un groupe avec de la place (Règle 5M/5F)
+            let { data: groups } = await sb.from('groups').select('*');
             if (!groups || groups.length === 0) {
-                const { data: newG } = await _supabase.from('groups').insert({nom: 'Amphi kELVIN'}).select();
+                // Créer un groupe par défaut si la table est vide
+                const { data: newG } = await sb.from('groups').insert({nom: 'Amphi kELVIN'}).select();
                 groups = newG;
             }
 
-            // 2. Trouver un groupe avec de la place (5M/5F)
             let targetGroupId = groups[0].id;
             for (let g of groups) {
-                const { count } = await _supabase.from('profiles').select('*', { count: 'exact', head: true })
-                    .eq('groupe_id', g.id).eq('sexe', selectedSexe);
+                const { count } = await sb.from('profiles')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('groupe_id', g.id)
+                    .eq('sexe', mySex);
+                
                 if (count < 5) {
                     targetGroupId = g.id;
                     break;
                 }
             }
 
-            // 3. Créer le profil
-            const { data, error } = await _supabase.from('profiles').insert([{
-                nom: nom, sexe: selectedSexe, photo: photo, groupe_id: targetGroupId
+            // 2. Créer le profil (ID généré par Supabase)
+            const { data, error } = await sb.from('profiles').insert([{
+                nom: nom,
+                sexe: mySex,
+                photo: photo,
+                phone: phone,
+                groupe_id: targetGroupId
             }]).select();
 
             if (error) throw error;
 
-            user = data[0];
-            localStorage.setItem('k_user_id', user.id);
+            me = data[0];
+            localStorage.setItem('kelvin_user_id', me.id);
             showView('page-lobby');
-            initRealtime();
+            listenRealtime();
 
-        } catch (err) {
-            console.error(err);
-            alert("Erreur : " + err.message);
+        } catch (e) {
+            console.error(e);
+            alert("Erreur d'inscription : " + e.message);
         }
     }
 
-    // --- LOBBY ---
+    // --- AFFICHAGE LOBBY ---
     async function renderLobby() {
-        const { data: allUsers } = await _supabase.from('profiles').select('*');
-        const { data: groups } = await _supabase.from('groups').select('*');
+        try {
+            const { data: users } = await sb.from('profiles').select('*');
+            const { data: groups } = await sb.from('groups').select('*');
 
-        document.getElementById('stats').innerText = `🔵 ${allUsers.length} Étudiants connectés`;
-
-        const container = document.getElementById('groupes');
-        container.innerHTML = groups.map(g => {
-            const members = allUsers.filter(u => u.groupe_id === g.id);
-            return `
-                <div class="groupe">
-                    <b>${g.nom}</b> <small>(${members.length}/10)</small>
-                    <div class="membres-liste">
-                        ${members.map(m => `
-                            <div class="membre" onclick="clicMembre('${m.id}')">
-                                <img class="avatar ${m.chat_avec ? 'occupe' : 'dispo'}" src="${m.photo}">
-                                <small>${m.nom}</small>
-                            </div>
-                        `).join('')}
+            document.getElementById('user-count').innerText = `🟢 ${users.length} étudiants connectés`;
+            
+            const list = document.getElementById('groupes-list');
+            list.innerHTML = groups.map(g => {
+                const members = users.filter(u => u.groupe_id === g.id);
+                return `
+                    <div class="groupe-item">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <b>${g.nom}</b>
+                            <small>${members.length}/10</small>
+                        </div>
+                        <div class="membres-grid">
+                            ${members.map(m => `
+                                <div class="avatar-wrap" onclick="openPrivate('${m.id}')">
+                                    <img class="avatar-img ${m.chat_avec ? 'occupe' : 'dispo'}" src="${m.photo}">
+                                    <small>${m.nom === me.nom ? 'Moi' : m.nom}</small>
+                                </div>
+                            `).join('')}
+                        </div>
                     </div>
-                </div>
-            `;
-        }).join('');
+                `;
+            }).join('');
+        } catch (e) { console.error(e); }
     }
 
-    async function clicMembre(id) {
-        if (id == user.id) return;
-        const { data: cible } = await _supabase.from('profiles').select('*').eq('id', id).single();
+    // --- OUVRIR CHAT PRIVÉ ---
+    async function openPrivate(id) {
+        if (id === me.id) return;
 
-        if (cible.sexe === user.sexe) return alert("Interdit ! Seulement Garçon + Fille 🏖️");
-        if (cible.chat_avec && cible.chat_avec !== user.id) return alert("Déjà occupé(e) ❤️");
+        const { data: u } = await sb.from('profiles').select('*').eq('id', id).single();
 
-        await _supabase.from('profiles').update({ chat_avec: cible.id }).eq('id', user.id);
-        chatActif = cible;
+        // RÈGLE : Seulement sexe opposé
+        if (u.sexe === me.sexe) {
+            return alert("🏖️ KELVIN LOVING : Pas de discussion privée entre garçons ou entre filles !");
+        }
+
+        // RÈGLE : Occupé
+        if (u.chat_avec && u.chat_avec !== me.id) {
+            return alert("Cet(te) étudiant(e) est déjà en ligne avec quelqu'un d'autre ❤️");
+        }
+
+        // Mettre à jour le statut
+        await sb.from('profiles').update({ chat_avec: u.id }).eq('id', me.id);
+        
+        target = u;
         showView('page-chat');
         loadMessages();
     }
 
-    // --- CHAT ---
+    // --- SYSTÈME DE MESSAGES ---
     async function loadMessages() {
-        if (!chatActif) return;
-        document.getElementById('chat-nom').innerText = chatActif.nom;
-        document.getElementById('chat-photo').src = chatActif.photo;
+        if (!target) return;
+        document.getElementById('chat-name').innerText = target.nom;
+        document.getElementById('chat-img').src = target.photo;
 
-        const { data } = await _supabase.from('messages').select('*')
-            .or(`and(expediteur_id.eq.${user.id},destinataire_id.eq.${chatActif.id}),and(expediteur_id.eq.${chatActif.id},destinataire_id.eq.${user.id})`)
+        const { data } = await sb.from('messages').select('*')
+            .or(`and(expediteur_id.eq.${me.id},destinataire_id.eq.${target.id}),and(expediteur_id.eq.${target.id},destinataire_id.eq.${me.id})`)
             .order('created_at', { ascending: true });
 
-        const div = document.getElementById('chat-messages');
-        div.innerHTML = data.map(m => `
-            <div class="msg ${m.expediteur_id === user.id ? 'moi' : 'autre'}">${m.texte}</div>
+        const box = document.getElementById('messages-box');
+        box.innerHTML = data.map(m => `
+            <div class="bulle ${m.expediteur_id === me.id ? 'moi' : 'autre'}">
+                ${m.texte}
+            </div>
         `).join('');
-        div.scrollTop = div.scrollHeight;
+        box.scrollTop = box.scrollHeight;
     }
 
-    async function envoyer() {
-        const msg = document.getElementById('msg-input').value.trim();
-        if (!msg) return;
-        await _supabase.from('messages').insert({ expediteur_id: user.id, destinataire_id: chatActif.id, texte: msg });
-        document.getElementById('msg-input').value = "";
+    async function sendMsg() {
+        const input = document.getElementById('text-input');
+        const val = input.value.trim();
+        if (!val) return;
+
+        const { error } = await sb.from('messages').insert({
+            expediteur_id: me.id,
+            destinataire_id: target.id,
+            texte: val
+        });
+
+        if (error) alert("Erreur d'envoi");
+        input.value = "";
         loadMessages();
     }
 
-    // --- UTILS ---
+    // --- UTILITAIRES ---
     function showView(id) {
         document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
         document.getElementById(id).classList.remove('hidden');
-        document.getElementById('nav-bar').classList.toggle('hidden', id === 'page-signup');
+        document.getElementById('navbar').classList.toggle('hidden', id === 'page-signup');
         if (id === 'page-lobby') renderLobby();
     }
 
-    function initRealtime() {
-        _supabase.channel('room1').on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, renderLobby).subscribe();
-        _supabase.channel('room2').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, loadMessages).subscribe();
+    function listenRealtime() {
+        // Écouter les changements sur Profiles (pour le lobby) et Messages (pour le chat)
+        sb.channel('global').on('postgres_changes', { event: '*', schema: 'public' }, (payload) => {
+            renderLobby();
+            if (target) loadMessages();
+        }).subscribe();
     }
 
     async function deconnecter() {
-        if (user) await _supabase.from('profiles').delete().eq('id', user.id);
-        localStorage.clear();
-        location.reload();
+        if (confirm("Se déconnecter de KELVIN LOVING ?")) {
+            if (me) await sb.from('profiles').delete().eq('id', me.id);
+            localStorage.clear();
+            location.reload();
+        }
     }
 
+    // Au chargement : Vérifier si déjà connecté
     window.onload = async () => {
-        const id = localStorage.getItem('k_user_id');
-        if (id) {
-            const { data } = await _supabase.from('profiles').select('*').eq('id', id).single();
-            if (data) { user = data; showView('page-lobby'); initRealtime(); }
+        const savedId = localStorage.getItem('kelvin_user_id');
+        if (savedId) {
+            const { data } = await sb.from('profiles').select('*').eq('id', savedId).single();
+            if (data) {
+                me = data;
+                showView('page-lobby');
+                listenRealtime();
+            }
         }
     };
+
+    // Support touche Entrée
+    document.getElementById('text-input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMsg();
+    });
 </script>
 </body>
 </html>
