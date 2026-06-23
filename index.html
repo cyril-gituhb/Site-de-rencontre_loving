@@ -13,20 +13,21 @@
   <div class="whatsapp-header">kELVIN Loving</div>
   <div class="card">
     <h2>Bienvenue ❤️</h2>
-    <input id="nom" placeholder="Ton prénom">
+    
+    <input id="nom" type="text" placeholder="Ton prénom" autocomplete="off">
     
     <div class="sexe-box">
       <button type="button" class="sexe-btn" data-sexe="fille">👩 Fille</button>
       <button type="button" class="sexe-btn" data-sexe="garcon">👨 Garçon</button>
     </div>
-    <input type="hidden" id="sexe">
+    <input type="hidden" id="sexe" value="">
 
     <label class="upload">📷 Photo de profil
       <input type="file" id="photo" accept="image/*">
     </label>
-    <img id="preview">
+    <img id="preview" alt="preview">
 
-    <button onclick="sInscrire()">Continuer</button>
+    <button type="button" onclick="sInscrire()">Continuer</button>
     <p class="note">5 filles + 5 garçons par groupe</p>
   </div>
 </section>
@@ -35,7 +36,7 @@
 <section id="page-lobby" class="page">
   <div class="whatsapp-header">
     <span>Groupes kELVIN</span>
-    <button onclick="deconnecter()">Déco</button>
+    <button type="button" onclick="deconnecter()">Déco</button>
   </div>
   <div id="groupes" class="chat-list"></div>
 </section>
@@ -44,8 +45,8 @@
 <section id="page-chat" class="page">
   <div class="chat-container">
     <div class="chat-header" id="chat-header">
-      <button onclick="retourLobby()">←</button>
-      <img id="chat-photo">
+      <button type="button" onclick="retourLobby()">←</button>
+      <img id="chat-photo" alt="">
       <div>
         <b id="chat-nom"></b>
         <small id="chat-status">en ligne</small>
@@ -55,8 +56,8 @@
     <div class="messages" id="messages"></div>
     
     <div class="input-box">
-      <input id="msg" placeholder="Tape un message" onkeypress="if(event.key==='Enter') envoyer()">
-      <button onclick="envoyer()">➤</button>
+      <input id="msg" type="text" placeholder="Tape un message" autocomplete="off">
+      <button type="button" onclick="envoyer()">➤</button>
     </div>
   </div>
 </section>
