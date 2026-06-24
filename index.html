@@ -8,41 +8,45 @@
     <style>
         :root { --primary: #128C7E; --secondary: #25D366; --whatsapp-bg: #e5ddd5; --red-chat: #ff4b2b; --blue-chat: #0077b6; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: #90e0ef; height: 100vh; width: 100vw; overflow: hidden; display: flex; justify-content: center; }
-        #app { width: 100vw; height: 100vh; background: white; display: flex; flex-direction: column; position: relative; }
-        @media (min-width: 600px) { #app { width: 400px; height: 92vh; border-radius: 20px; border: 5px solid #333; margin-top: 2vh; } }
         
-        nav { background: var(--primary); color: white; padding: 10px; display: flex; justify-content: space-between; align-items: center; min-height: 65px; }
-        .nav-links { display: flex; gap: 5px; }
-        .nav-links button { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 6px 8px; border-radius: 20px; font-size: 10px; cursor: pointer; }
+        /* Fix Mobile Height */
+        html, body { height: 100%; width: 100%; overflow: hidden; background: #90e0ef; }
+        body { display: flex; justify-content: center; align-items: center; }
 
-        .view { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #f0f2f5; }
+        #app { 
+            width: 100vw; height: 100%; max-height: 100%; 
+            background: white; display: flex; flex-direction: column; position: relative; 
+        }
+        @media (min-width: 600px) { #app { width: 400px; height: 92vh; border-radius: 20px; } }
+        
+        nav { background: var(--primary); color: white; padding: 10px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        .nav-links button { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 5px; border-radius: 10px; font-size: 10px; cursor: pointer; }
+
+        .view { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #f0f2f5; position: relative; }
         .hidden { display: none !important; }
 
-        /* Signup / Settings */
-        #page-signup, #page-settings { background: linear-gradient(135deg, #128C7E 0%, #25D366 100%); justify-content: center; align-items: center; padding: 20px; }
-        .card { background: white; padding: 20px; border-radius: 15px; width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 12px; }
-        input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; }
-        .sexe-box { display: flex; gap: 10px; }
-        .sexe-btn { flex: 1; padding: 10px; border: 2px solid #eee; background: white; border-radius: 8px; cursor: pointer; }
-        .sexe-btn.active { border-color: var(--primary); background: #dcf8c6; }
-        .btn-main { background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-
         /* Lobby */
-        .groupe-item { background: white; padding: 15px; border-radius: 12px; margin: 10px; border-left: 5px solid var(--primary); cursor: pointer; }
-        .membres-grid { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; }
-        .avatar-wrap { display: flex; flex-direction: column; align-items: center; width: 55px; }
-        .avatar-img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid #ccc; }
+        #groupes-list { flex: 1; overflow-y: auto; padding-bottom: 20px; }
+        .groupe-item { background: white; padding: 12px; border-radius: 10px; margin: 8px; border-left: 5px solid var(--primary); }
+        .membres-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+        .avatar-wrap { display: flex; flex-direction: column; align-items: center; width: 50px; cursor: pointer; }
+        .avatar-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
 
-        /* Chat Bulles Rouge/Bleu */
-        .chat-container { flex: 1; display: flex; flex-direction: column; background: var(--whatsapp-bg) url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); }
-        #messages-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-        .bulle { max-width: 75%; padding: 10px; border-radius: 10px; font-size: 14px; color: white; }
+        /* Chat Bulles & Input Fix */
+        .chat-container { flex: 1; display: flex; flex-direction: column; background: var(--whatsapp-bg) url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); height: 100%; }
+        #messages-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; -webkit-overflow-scrolling: touch; }
+        .bulle { max-width: 75%; padding: 10px; border-radius: 10px; font-size: 14px; color: white; word-wrap: break-word; }
         .bulle.moi { align-self: flex-end; background: var(--red-chat); border-top-right-radius: 0; }
         .bulle.autre { align-self: flex-start; background: var(--blue-chat); border-top-left-radius: 0; }
 
-        /* Modal Choice */
-        #modal-choice { position: absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; z-index:100; }
+        /* Barre de saisie fixée en bas */
+        .input-area { background: #f0f0f0; padding: 10px; display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
+        #text-input { flex: 1; padding: 12px; border-radius: 20px; border: 1px solid #ccc; outline: none; font-size: 16px; }
+
+        /* Modal Overlay */
+        .modal-full { position: absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; justify-content:center; align-items:center; z-index:1000; padding: 20px; }
+        .card { background: white; padding: 20px; border-radius: 15px; width: 100%; display: flex; flex-direction: column; gap: 10px; max-height: 80%; overflow-y: auto; }
+        .btn-name { padding: 10px; background: #eee; border: none; border-radius: 5px; text-align: left; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -57,29 +61,29 @@
         </div>
     </nav>
 
-    <!-- INSCRIPTION -->
+    <!-- SIGNUP -->
     <section id="page-signup" class="view">
-        <div class="card">
+        <div class="card" style="margin: auto;">
             <h2>Bienvenue ❤️</h2>
             <input id="nom" type="text" placeholder="Ton prénom">
-            <div class="sexe-box">
-                <button class="sexe-btn" id="m-btn" onclick="setSex('garcon')">👨 Garçon</button>
-                <button class="sexe-btn" id="f-btn" onclick="setSex('fille')">👩 Fille</button>
+            <div class="sexe-box" style="display:flex; gap:10px;">
+                <button class="sexe-btn" id="m-btn" onclick="setSex('garcon')">👨 M</button>
+                <button class="sexe-btn" id="f-btn" onclick="setSex('fille')">👩 F</button>
             </div>
             <input type="file" onchange="previewPhoto(event, 'preview')">
-            <center><img id="preview" style="width:60px; height:60px; border-radius:50%; display:none; object-fit:cover; border:2px solid var(--primary)"></center>
-            <button class="btn-main" onclick="startAdventure()">Commencer</button>
+            <center><img id="preview" style="width:50px; height:50px; border-radius:50%; display:none; object-fit:cover;"></center>
+            <button class="btn-name" style="background:var(--secondary); color:white; text-align:center;" onclick="startAdventure()">Commencer</button>
         </div>
     </section>
 
-    <!-- MODIFIER PROFIL -->
+    <!-- SETTINGS -->
     <section id="page-settings" class="view hidden">
-        <div class="card">
+        <div class="card" style="margin: auto;">
             <h2>Modifier Profil</h2>
-            <input id="edit-nom" type="text" placeholder="Changer de nom">
+            <input id="edit-nom" type="text">
             <input type="file" onchange="previewPhoto(event, 'edit-preview')">
-            <center><img id="edit-preview" style="width:60px; height:60px; border-radius:50%; object-fit:cover; border:2px solid var(--primary)"></center>
-            <button class="btn-main" onclick="saveProfile()">Enregistrer</button>
+            <center><img id="edit-preview" style="width:50px; height:50px; border-radius:50%; object-fit:cover;"></center>
+            <button class="btn-name" style="background:var(--secondary); color:white; text-align:center;" onclick="saveProfile()">Enregistrer</button>
             <button onclick="showView('page-lobby')">Retour</button>
         </div>
     </section>
@@ -87,31 +91,40 @@
     <!-- LOBBY -->
     <section id="page-lobby" class="view hidden">
         <div id="groupes-list"></div>
+        <button class="btn-name" style="margin: 10px; background: var(--primary); color: white; text-align:center;" onclick="showGroupNamePicker()">➕ Créer un Groupe</button>
     </section>
 
-    <!-- CHAT -->
+    <!-- CHAT (Plein écran mobile) -->
     <section id="page-chat" class="view hidden">
         <div class="chat-container">
-            <div class="chat-header" style="background:var(--primary); color:white; padding:10px; display:flex; align-items:center; gap:10px;">
-                <button onclick="showView('page-lobby')" style="background:none; border:none; color:white; font-size:20px;">←</button>
-                <img id="chat-img" style="width:35px; height:35px; border-radius:50%;">
+            <div class="chat-header">
+                <button onclick="showView('page-lobby')" style="background:none; border:none; color:white; font-size:24px;">←</button>
+                <img id="chat-img" style="width:35px; height:35px; border-radius:50%; background: white;">
                 <b id="chat-name">Nom</b>
             </div>
             <div id="messages-box"></div>
-            <div style="background:#f0f0f0; padding:10px; display:flex; gap:10px;">
-                <input id="text-input" type="text" style="flex:1; padding:10px; border-radius:20px; border:none;" placeholder="Tape un message">
-                <button onclick="sendMsg()" style="background:var(--primary); color:white; border:none; width:40px; height:40px; border-radius:50%;">➤</button>
+            <div class="input-area">
+                <input id="text-input" type="text" placeholder="Message...">
+                <button onclick="sendMsg()" style="background:var(--primary); color:white; border:none; width:45px; height:45px; border-radius:50%;">➤</button>
             </div>
         </div>
     </section>
 
-    <!-- MODAL CHOIX PRIVÉ / GROUPE -->
-    <div id="modal-choice" class="hidden">
+    <!-- MODALS -->
+    <div id="modal-names" class="modal-full hidden">
+        <div class="card">
+            <h3>Choisir un nom de groupe</h3>
+            <div id="names-list" style="display:flex; flex-direction:column; gap:5px;"></div>
+            <button onclick="closeModals()">Fermer</button>
+        </div>
+    </div>
+
+    <div id="modal-choice" class="modal-full hidden">
         <div class="card">
             <h3 id="choice-name">Option</h3>
-            <button class="btn-main" onclick="startPrivate()">💬 Discuter en privé</button>
-            <button class="btn-main" style="background:var(--primary)" onclick="joinMemberGroup()">👥 Rejoindre son groupe</button>
-            <button onclick="closeChoice()" style="border:none; background:none; color:gray">Annuler</button>
+            <button class="btn-name" style="background:var(--primary); color:white;" onclick="startPrivate()">💬 Message Privé</button>
+            <button class="btn-name" style="background:var(--secondary); color:white;" onclick="joinThisGroup()">👥 Rejoindre son Groupe</button>
+            <button onclick="closeModals()">Annuler</button>
         </div>
     </div>
 </div>
@@ -121,122 +134,104 @@
     const S_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvb3ZldmdrbWFyb3pqdWx1bGtyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyOTE3MzMsImV4cCI6MjA5Njg2NzczM30.Iao5_dnv4j71IPSpy-rdWGR0NPzDEUBMERPFVE8o1G0";
     const sb = supabase.createClient(S_URL, S_KEY);
 
-    let me = null, target = null, selectedSex = "", memberClicked = null;
+    let me = null, target = null, activeGroup = null, mySex = "";
+    const groupNames = ["Plage 1 🌊", "L'Amphi 🏛️", "Sunset 🌅", "Révision Chill 📚", "Caffé des Amis ☕", "Beach Party 🏖️", "Study Lab 🧪", "Vibe Étudiante ✨", "Le Jardin 🌴", "Island Love 🏝️"];
 
-    function setSex(s) {
-        selectedSex = s;
-        document.getElementById('m-btn').classList.toggle('active', s === 'garcon');
-        document.getElementById('f-btn').classList.toggle('active', s === 'fille');
-    }
-
-    function previewPhoto(e, id) {
-        const reader = new FileReader();
-        reader.onload = () => { const img = document.getElementById(id); img.src = reader.result; img.style.display = 'block'; };
-        reader.readAsDataURL(e.target.files[0]);
-    }
+    function setSex(s) { mySex = s; document.getElementById('m-btn').style.background = s==='garcon'?'#dcf8c6':'white'; document.getElementById('f-btn').style.background = s==='fille'?'#dcf8c6':'white'; }
+    function previewPhoto(e, id) { const reader = new FileReader(); reader.onload = () => { document.getElementById(id).src = reader.result; document.getElementById(id).style.display = 'block'; }; reader.readAsDataURL(e.target.files[0]); }
+    function closeModals() { document.querySelectorAll('.modal-full').forEach(m => m.classList.add('hidden')); }
 
     async function startAdventure() {
-        const nom = document.getElementById('nom').value;
-        const photo = document.getElementById('preview').src;
-        if (!nom || !selectedSex || !photo) return alert("Remplis tout !");
-        
-        let { data: groups } = await sb.from('groups').select('*');
-        const { data, error } = await sb.from('profiles').insert([{ nom, sexe: selectedSex, photo, groupe_id: groups[0].id }]).select();
-        if (error) return alert(error.message);
-        me = data[0];
-        localStorage.setItem('kelvin_user_id', me.id);
-        showView('page-lobby');
-        initRealtime();
+        const nom = document.getElementById('nom').value; const photo = document.getElementById('preview').src;
+        if(!nom || !mySex || !photo) return alert("Remplis tout !");
+        let { data: grp } = await sb.from('groups').select('*').limit(1);
+        const { data, error } = await sb.from('profiles').insert([{ nom, sexe: mySex, photo, groupe_id: grp[0].id }]).select();
+        if(error) return alert(error.message);
+        me = data[0]; localStorage.setItem('kelvin_user_id', me.id);
+        showView('page-lobby'); initRealtime();
     }
 
-    // --- MODIFIER PROFIL ---
-    async function saveProfile() {
-        const newNom = document.getElementById('edit-nom').value || me.nom;
-        const newPhoto = document.getElementById('edit-preview').src || me.photo;
-        const { error } = await sb.from('profiles').update({ nom: newNom, photo: newPhoto }).eq('id', me.id);
-        if (!error) { alert("Profil mis à jour !"); me.nom = newNom; me.photo = newPhoto; showView('page-lobby'); }
+    // --- LOGIQUE GROUPE ---
+    function showGroupNamePicker() {
+        const list = document.getElementById('names-list'); list.innerHTML = "";
+        groupNames.forEach(name => {
+            list.innerHTML += `<button class="btn-name" onclick="createGroup('${name}')">${name}</button>`;
+        });
+        document.getElementById('modal-names').classList.remove('hidden');
     }
 
-    // --- LOBBY & GROUPES ---
-    async function renderLobby() {
-        const { data: users } = await sb.from('profiles').select('*');
-        const { data: groups } = await sb.from('groups').select('*');
-        const list = document.getElementById('groupes-list');
-        list.innerHTML = groups.map(g => {
-            const members = users.filter(u => u.groupe_id === g.id);
-            return `<div class="groupe-item" onclick="tryJoinGroup('${g.id}', ${members.length})">
-                <b>${g.nom} (${members.length}/10)</b>
-                <div class="membres-grid">${members.map(m => `
-                    <div class="avatar-wrap" onclick="openChoice(event, '${m.id}', '${m.nom}', '${m.groupe_id}')">
-                        <img class="avatar-img" src="${m.photo}">
-                        <small>${m.nom}</small>
-                    </div>`).join('')}</div></div>`;
-        }).join('');
+    async function createGroup(name) {
+        const { data } = await sb.from('groups').insert([{ nom: name }]).select();
+        closeModals(); renderLobby();
     }
 
-    // --- LOGIQUE CHOIX PRIVÉ / GROUPE ---
-    function openChoice(e, id, nom, gid) {
-        e.stopPropagation();
-        if (id === me.id) return;
-        memberClicked = { id, nom, gid };
-        document.getElementById('choice-name').innerText = "Discuter avec " + nom;
-        document.getElementById('modal-choice').classList.remove('hidden');
-    }
-
-    function closeChoice() { document.getElementById('modal-choice').classList.add('hidden'); }
-
-    async function startPrivate() {
-        const { data: u } = await sb.from('profiles').select('*').eq('id', memberClicked.id).single();
-        if (u.sexe === me.sexe) return alert("Interdit entre même sexe ! 🏖️");
-        target = u;
-        closeChoice();
+    async function tryJoinGroup(gid) {
+        const { count } = await sb.from('profiles').select('*', { count: 'exact', head: true }).eq('groupe_id', gid);
+        if (count >= 10) return alert("Groupe plein (10/10) !");
+        await sb.from('profiles').update({ groupe_id: gid }).eq('id', me.id);
+        me.groupe_id = gid; target = null; activeGroup = gid;
         showView('page-chat');
     }
 
-    async function tryJoinGroup(gid, count) {
-        if (count >= 10) return alert("Ce groupe est déjà complet (10/10) !");
-        await sb.from('profiles').update({ groupe_id: gid }).eq('id', me.id);
-        me.groupe_id = gid;
-        alert("Vous avez rejoint ce groupe !");
-        renderLobby();
+    // --- CHAT GROUPE & PRIVÉ ---
+    async function openChoice(e, userObj) {
+        e.stopPropagation(); if (userObj.id === me.id) return;
+        target = userObj; document.getElementById('choice-name').innerText = userObj.nom;
+        document.getElementById('modal-choice').classList.remove('hidden');
     }
 
-    function joinMemberGroup() {
-        closeChoice();
-        tryJoinGroup(memberClicked.gid, 0); // La vérification se fait dans la fonction
+    function startPrivate() { 
+        if (target.sexe === me.sexe) return alert("Interdit entre même sexe ! 🏖️");
+        activeGroup = null; closeModals(); showView('page-chat'); 
+    }
+    function joinThisGroup() { activeGroup = target.groupe_id; closeModals(); tryJoinGroup(activeGroup); }
+
+    async function sendMsg() {
+        const val = document.getElementById('text-input').value; if (!val) return;
+        const msgData = { expediteur_id: me.id, texte: val };
+        if (activeGroup) msgData.group_id = activeGroup; else msgData.destinataire_id = target.id;
+        await sb.from('messages').insert([msgData]);
+        document.getElementById('text-input').value = ""; loadMessages();
     }
 
-    // --- CHAT ---
     async function loadMessages() {
-        if (!target) return;
-        document.getElementById('chat-name').innerText = target.nom;
-        document.getElementById('chat-img').src = target.photo;
-        const { data } = await sb.from('messages').select('*').or(`and(expediteur_id.eq.${me.id},destinataire_id.eq.${target.id}),and(expediteur_id.eq.${target.id},destinataire_id.eq.${me.id})`).order('created_at', { ascending: true });
+        let query = sb.from('messages').select('*');
+        if (activeGroup) {
+            query = query.eq('group_id', activeGroup);
+            document.getElementById('chat-name').innerText = "Groupe";
+            document.getElementById('chat-img').src = "https://cdn-icons-png.flaticon.com/512/32/32441.png";
+        } else {
+            query = query.or(`and(expediteur_id.eq.${me.id},destinataire_id.eq.${target.id}),and(expediteur_id.eq.${target.id},destinataire_id.eq.${me.id})`);
+            document.getElementById('chat-name').innerText = target.nom;
+            document.getElementById('chat-img').src = target.photo;
+        }
+        const { data } = await query.order('created_at', { ascending: true });
         const box = document.getElementById('messages-box');
         box.innerHTML = data.map(m => `<div class="bulle ${m.expediteur_id === me.id ? 'moi' : 'autre'}">${m.texte}</div>`).join('');
         box.scrollTop = box.scrollHeight;
     }
 
-    async function sendMsg() {
-        const val = document.getElementById('text-input').value;
-        if (!val) return;
-        await sb.from('messages').insert({ expediteur_id: me.id, destinataire_id: target.id, texte: val });
-        document.getElementById('text-input').value = "";
-        loadMessages();
+    // --- SYSTEM ---
+    async function renderLobby() {
+        const { data: users } = await sb.from('profiles').select('*');
+        const { data: grps } = await sb.from('groups').select('*');
+        document.getElementById('groupes-list').innerHTML = grps.map(g => {
+            const mbs = users.filter(u => u.groupe_id === g.id);
+            return `<div class="groupe-item" onclick="activeGroup='${g.id}'; tryJoinGroup('${g.id}')">
+                <b>${g.nom} (${mbs.length}/10)</b>
+                <div class="membres-grid">${mbs.map(m => `<div class="avatar-wrap" onclick='openChoice(event, ${JSON.stringify(m)})'><img class="avatar-img" src="${m.photo}"><small>${m.nom}</small></div>`).join('')}</div>
+            </div>`;
+        }).join('');
     }
 
-    // --- NAVIGATION ---
     function showView(id) {
         document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
         document.getElementById(id).classList.remove('hidden');
         document.getElementById('navbar').classList.toggle('hidden', id === 'page-signup');
-        if (id === 'page-lobby') renderLobby();
-        if (id === 'page-settings') { document.getElementById('edit-nom').value = me.nom; document.getElementById('edit-preview').src = me.photo; }
+        if (id === 'page-lobby') renderLobby(); else if (id === 'page-chat') loadMessages();
     }
 
-    function initRealtime() {
-        sb.channel('any').on('postgres_changes', { event: '*', schema: 'public' }, () => { renderLobby(); if(target) loadMessages(); }).subscribe();
-    }
+    function initRealtime() { sb.channel('any').on('postgres_changes', { event: '*', schema: 'public' }, () => { renderLobby(); if(me) loadMessages(); }).subscribe(); }
 
     async function deconnecter() { if(me) await sb.from('profiles').delete().eq('id', me.id); localStorage.clear(); location.reload(); }
 
