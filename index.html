@@ -3,75 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>KELVIN LOVING 🏖️ | SPECIAL EDITION</title>
+    <title>KELVIN LOVING 🏖️ | ÉDITION LÉGENDE</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { 
             --primary: #128C7E; --secondary: #25D366; --whatsapp-bg: #e5ddd5; 
-            --red-chat: #ff4b2b; --blue-chat: #0077b6; --night-bg: #0b141a;
+            --red-chat: #ff4b2b; --blue-chat: #0077b6; --purple: #6a1b9a;
         }
         
-        /* MODE NUIT CLASSE */
-        body.dark-mode { --primary: #202c33; --whatsapp-bg: #0b141a; background: #000; }
-        body.dark-mode #app { background: #111b21; border-color: #222; }
+        body.dark-mode { --primary: #1c272d; --whatsapp-bg: #0b141a; background: #000; }
+        body.dark-mode #app { background: #111b21; border-color: #333; }
         body.dark-mode .view, body.dark-mode .card, body.dark-mode .groupe-item { background: #111b21; color: white; }
         body.dark-mode .bulle.autre { background: #202c33; color: white; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; transition: background 0.3s; }
-        html, body { height: 100%; width: 100%; overflow: hidden; }
-        body { display: flex; justify-content: center; align-items: center; background: #90e0ef; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        html, body { height: 100%; width: 100%; overflow: hidden; background: #90e0ef; }
+        body { display: flex; justify-content: center; align-items: center; }
 
         #app { width: 100vw; height: 100%; display: flex; flex-direction: column; background: white; position: relative; overflow: hidden; }
         @media (min-width: 600px) { #app { width: 400px; height: 92vh; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); } }
         
-        nav { background: var(--primary); color: white; padding: 10px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; z-index: 100; }
-        .logo { font-weight: bold; }
-        .nav-links button { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px; border-radius: 12px; font-size: 10px; cursor: pointer; }
+        nav { background: var(--primary); color: white; padding: 10px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; z-index: 100; flex-wrap: wrap; gap: 5px;}
+        .nav-links { display: flex; gap: 4px; overflow-x: auto; padding-bottom: 2px; }
+        .nav-links button { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 8px; border-radius: 10px; font-size: 10px; cursor: pointer; white-space: nowrap; }
 
         .view { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #f0f2f5; }
         .hidden { display: none !important; }
 
-        /* BADGE VERIF */
-        .verif-badge { color: #0095f6; font-size: 14px; margin-left: 3px; }
+        /* CONFESSIONS */
+        #confessions-list { flex: 1; overflow-y: auto; padding: 15px; }
+        .conf-card { background: var(--purple); color: white; padding: 12px; border-radius: 12px; margin-bottom: 10px; font-style: italic; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 
-        /* CHAT & VOCAUX */
-        .chat-container { flex: 1; display: flex; flex-direction: column; background: var(--whatsapp-bg); height: 100%; position: relative; }
+        /* CHAT */
+        .chat-container { flex: 1; display: flex; flex-direction: column; background: var(--whatsapp-bg); height: 100%; }
         #messages-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-        .bulle { max-width: 75%; padding: 10px; border-radius: 12px; font-size: 14px; color: white; position: relative; cursor: pointer; }
+        .bulle { max-width: 75%; padding: 10px; border-radius: 12px; font-size: 14px; color: white; position: relative; }
         .bulle.moi { align-self: flex-end; background: var(--red-chat); border-top-right-radius: 0; }
         .bulle.autre { align-self: flex-start; background: var(--blue-chat); border-top-left-radius: 0; }
         
-        .voice-msg { display: flex; align-items: center; gap: 8px; font-style: italic; }
-        .voice-play-btn { background: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; }
+        .voice-play { background: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; margin-right: 5px; }
 
-        /* BARRE DE SAISIE */
-        .input-area { background: #f0f0f0; padding: 10px; display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
+        /* INPUT AREA */
+        .input-area { background: #f0f0f0; padding: 10px; display: flex; gap: 8px; align-items: center; flex-shrink: 0; border-top: 1px solid #ddd; }
         #text-input { flex: 1; padding: 12px; border-radius: 25px; border: none; outline: none; font-size: 16px; }
-        .record-btn { background: #ff4b2b; color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .record-btn.recording { animation: pulse 1s infinite; background: red; }
+        .mic-btn { background: #ff4b2b; color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .mic-btn.recording { animation: pulse 1s infinite; background: red; }
 
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
 
         /* LOBBY */
         .groupe-item { background: white; padding: 12px; border-radius: 12px; margin: 10px; border-left: 5px solid var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .avatar-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--secondary); }
-
-        .card { background: white; padding: 20px; border-radius: 15px; width: 90%; max-width: 340px; display: flex; flex-direction: column; gap: 15px; margin: auto; }
+        .avatar-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--secondary); margin-right: 5px; cursor: pointer; }
+        .card { background: white; padding: 20px; border-radius: 15px; width: 90%; max-width: 340px; display: flex; flex-direction: column; gap: 12px; margin: auto; }
     </style>
 </head>
 <body>
 
 <div id="app">
     <nav id="navbar" class="hidden">
-        <div class="logo">KELVIN 🏖️</div>
+        <div class="logo" onclick="showView('page-lobby')">KELVIN 🏖️</div>
         <div class="nav-links">
             <button onclick="toggleNightMode()">🌙 Mode</button>
             <button onclick="showView('page-lobby')">👥 Groupes</button>
+            <button onclick="showView('page-confessions')">🤫 Mur</button>
+            <button onclick="startFlash()">⚡ Flash</button>
             <button onclick="showView('page-settings')">⚙️ Profil</button>
         </div>
     </nav>
 
-    <!-- SIGNUP -->
+    <!-- INSCRIPTION -->
     <section id="page-signup" class="view">
         <div class="card">
             <h2 style="text-align:center; color:var(--primary)">KELVIN LOVING 🏖️</h2>
@@ -81,15 +81,25 @@
                 <option value="fille">👩 Fille</option>
             </select>
             <input type="file" onchange="previewPhoto(event, 'preview')">
-            <center><img id="preview" style="width:60px; height:60px; border-radius:50%; display:none; object-fit:cover;"></center>
-            <button class="record-btn" style="width:100%; border-radius:8px;" onclick="startAdventure()">Commencer 🚀</button>
+            <center><img id="preview" style="width:60px; height:60px; border-radius:50%; display:none; object-fit:cover; border:2px solid var(--primary)"></center>
+            <button class="mic-btn" style="width:100%; border-radius:8px;" onclick="startAdventure()">C'est parti ! 🚀</button>
         </div>
     </section>
 
     <!-- LOBBY -->
     <section id="page-lobby" class="view hidden">
-        <div id="stats-visites" style="padding:10px; text-align:center; font-size:12px; background:#dcf8c6;">👁️ 0 personne a visité ton profil aujourd'hui</div>
+        <div id="stats-visites" style="padding:8px; text-align:center; font-size:11px; background:#dcf8c6;">👁️ Chargement des visites...</div>
         <div id="groupes-list"></div>
+    </section>
+
+    <!-- MUR DES CONFESSIONS -->
+    <section id="page-confessions" class="view hidden">
+        <div style="padding:10px; background:var(--purple); color:white; text-align:center; font-weight:bold;">🤫 Mur des Secrets</div>
+        <div id="confessions-list"></div>
+        <div class="input-area" style="background:#f3e5f5">
+            <input id="conf-input" type="text" placeholder="Ton secret anonyme...">
+            <button onclick="postConfession()" style="background:var(--purple); color:white; border:none; width:45px; height:45px; border-radius:50%;">🤫</button>
+        </div>
     </section>
 
     <!-- CHAT -->
@@ -97,13 +107,13 @@
         <div class="chat-container">
             <div class="chat-header" style="background:var(--primary); color:white; padding:10px; display:flex; align-items:center; gap:10px;">
                 <button onclick="showView('page-lobby')" style="background:none; border:none; color:white; font-size:24px;">←</button>
-                <img id="chat-img" style="width:35px; height:35px; border-radius:50%;">
-                <b id="chat-name">Nom</b> <span id="chat-verif"></span>
+                <img id="chat-img" style="width:35px; height:35px; border-radius:50%; object-fit:cover; background:white;">
+                <b id="chat-name">Nom</b> <span id="chat-verif" style="color:#0095f6;"></span>
             </div>
             <div id="messages-box"></div>
             <div class="input-area">
                 <input id="text-input" type="text" placeholder="Message...">
-                <button id="record-btn" class="record-btn">🎤</button>
+                <button id="mic-btn" class="mic-btn">🎤</button>
                 <button onclick="sendMsg()" style="background:var(--primary); color:white; border:none; width:45px; height:45px; border-radius:50%; font-size:20px;">➤</button>
             </div>
         </div>
@@ -113,10 +123,10 @@
     <section id="page-settings" class="view hidden">
         <div class="card">
             <h2>Mon Profil</h2>
-            <p>Visites : <span id="my-visites">0</span> 👁️</p>
-            <button class="record-btn" style="width:100%; border-radius:8px; background:#0095f6;" onclick="verifyMe()">Obtenir le Badge Bleu ✔️</button>
-            <button onclick="deconnecter()" style="color:red; background:none; border:none; margin-top:10px;">Quitter l'Appli</button>
-            <button onclick="showView('page-lobby')" style="margin-top:10px;">Retour</button>
+            <p>Visites : <b id="my-visites">0</b> 👁️</p>
+            <button class="mic-btn" style="width:100%; border-radius:8px; background:#0095f6; font-size:14px;" onclick="verifyMe()">Obtenir Badge Certifié ✔️</button>
+            <button onclick="deconnecter()" style="color:red; background:none; border:none; margin-top:10px;">Quitter</button>
+            <button onclick="showView('page-lobby')">Retour</button>
         </div>
     </section>
 </div>
@@ -128,24 +138,43 @@
 
     let me = null, target = null, activeGroup = null, mediaRecorder, audioChunks = [];
 
-    // --- NIGHT MODE ---
     function toggleNightMode() { document.body.classList.toggle('dark-mode'); }
-
-    // --- PHOTO PREVIEW ---
     function previewPhoto(e, id) { const reader = new FileReader(); reader.onload = () => { document.getElementById(id).src = reader.result; document.getElementById(id).style.display = 'block'; }; reader.readAsDataURL(e.target.files[0]); }
 
     // --- INSCRIPTION ---
     async function startAdventure() {
-        const nom = document.getElementById('nom').value;
+        const nom = document.getElementById('nom').value.trim();
         const sexe = document.getElementById('sexe-select').value;
         const photo = document.getElementById('preview').src;
-        if(!nom || !photo) return alert("Remplis tout !");
+        if(!nom || photo.includes('display:none')) return alert("Nom et photo requis !");
         
-        let { data: grp } = await sb.from('groups').select('*').limit(1);
-        const { data, error } = await sb.from('profiles').insert([{ nom, sexe, photo, groupe_id: grp[0].id }]).select();
-        if(error) return alert("Erreur");
+        let { data: grps } = await sb.from('groups').select('*').limit(1);
+        const { data, error } = await sb.from('profiles').insert([{ nom, sexe, photo, groupe_id: grps[0].id, visites: 0 }]).select();
+        if(error) return alert("Erreur d'entrée");
         me = data[0]; localStorage.setItem('kelvin_user_id', me.id);
         showView('page-lobby'); initRealtime();
+    }
+
+    // --- MUR DES CONFESSIONS ---
+    async function postConfession() {
+        const input = document.getElementById('conf-input');
+        if(!input.value.trim()) return;
+        await sb.from('confessions').insert([{ texte: input.value }]);
+        input.value = ""; loadConfessions();
+    }
+    async function loadConfessions() {
+        const { data } = await sb.from('confessions').select('*').order('created_at', { ascending: false });
+        document.getElementById('confessions-list').innerHTML = data.map(c => `<div class="conf-card">" ${c.texte} "</div>`).join('');
+    }
+
+    // --- FLASH ---
+    async function startFlash() {
+        const opposé = me.sexe === 'fille' ? 'garcon' : 'fille';
+        const { data } = await sb.from('profiles').select('*').eq('sexe', opposé).limit(10);
+        if(!data || data.length === 0) return alert("Personne n'est disponible...");
+        target = data[Math.floor(Math.random() * data.length)]; activeGroup = null;
+        alert("⚡ FLASH ! Discussion avec " + target.nom);
+        showView('page-chat');
     }
 
     // --- VOCAUX ---
@@ -154,93 +183,81 @@
         mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
         mediaRecorder.onstop = async () => {
             const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
-            const reader = new FileReader();
-            reader.readAsDataURL(audioBlob);
+            const reader = new FileReader(); reader.readAsDataURL(audioBlob);
             reader.onloadend = async () => {
                 await sb.from('messages').insert([{ expediteur_id: me.id, destinataire_id: target?.id, group_id: activeGroup, texte: reader.result, is_voice: true }]);
                 audioChunks = [];
             };
         };
-    });
+    }).catch(() => console.log("Micro non autorisé"));
 
-    const recBtn = document.getElementById('record-btn');
-    recBtn.onmousedown = () => { if(target || activeGroup) { mediaRecorder.start(); recBtn.classList.add('recording'); } };
-    recBtn.onmouseup = () => { if(mediaRecorder.state === "recording") { mediaRecorder.stop(); recBtn.classList.remove('recording'); } };
+    const mic = document.getElementById('mic-btn');
+    mic.onmousedown = () => { if(target || activeGroup) { mediaRecorder.start(); mic.classList.add('recording'); } };
+    mic.onmouseup = () => { if(mediaRecorder.state === "recording") { mediaRecorder.stop(); mic.classList.remove('recording'); } };
 
-    // --- VISITES ---
-    async function trackVisit(userId) {
-        if(userId === me.id) return;
-        await sb.rpc('increment_visites', { row_id: userId });
-    }
-
-    // --- SYSTEME ---
+    // --- LOBBY & CHAT ---
     async function renderLobby() {
         const { data: users } = await sb.from('profiles').select('*');
         const { data: grps } = await sb.from('groups').select('*');
-        
-        const myData = users.find(u => u.id === me.id);
-        document.getElementById('stats-visites').innerText = `👁️ ${myData.visites} personnes ont visité ton profil aujourd'hui`;
-        document.getElementById('my-visites').innerText = myData.visites;
-
+        const myD = users.find(u => u.id === me.id);
+        if(myD) {
+            me = myD;
+            document.getElementById('stats-visites').innerText = `👁️ ${me.visites || 0} personnes ont visité ton profil aujourd'hui`;
+            document.getElementById('my-visites').innerText = me.visites || 0;
+        }
         document.getElementById('groupes-list').innerHTML = grps.map(g => {
             const mbs = users.filter(u => u.groupe_id === g.id);
-            return `<div class="groupe-item" onclick="activeGroup='${g.id}'; showView('page-chat')">
-                <b>${g.nom} (${mbs.length}/10)</b>
-                <div style="display:flex; gap:10px; margin-top:10px;">
-                    ${mbs.map(m => `<img onclick="event.stopPropagation(); openPrivate('${m.id}')" src="${m.photo}" class="avatar-img" title="${m.nom}">`).join('')}
-                </div>
+            return `<div class="groupe-item" onclick="activeGroup='${g.id}'; target=null; showView('page-chat')">
+                <b>${g.nom} (${mbs.length}/10)</b><br>
+                <div style="margin-top:8px;">${mbs.map(m => `<img onclick="event.stopPropagation(); openPrivate('${m.id}')" src="${m.photo}" class="avatar-img" title="${m.nom}">`).join('')}</div>
             </div>`;
         }).join('');
     }
 
     async function openPrivate(id) {
         const { data: u } = await sb.from('profiles').select('*').eq('id', id).single();
-        if(u.sexe === me.sexe) return alert("Seulement Fille/Garçon !");
+        if(u.sexe === me.sexe) return alert("Interdit entre même sexe ! 🏖️");
+        await sb.from('profiles').update({ visites: (u.visites || 0) + 1 }).eq('id', id);
         target = u; activeGroup = null;
-        await sb.from('profiles').update({ visites: u.visites + 1 }).eq('id', id);
         showView('page-chat');
     }
 
     async function sendMsg() {
-        const val = document.getElementById('text-input').value;
+        const val = document.getElementById('text-input').value.trim();
         if(!val) return;
         await sb.from('messages').insert([{ expediteur_id: me.id, destinataire_id: target?.id, group_id: activeGroup, texte: val }]);
-        document.getElementById('text-input').value = "";
-        loadMessages();
+        document.getElementById('text-input').value = ""; loadMessages();
     }
 
     async function loadMessages() {
-        let query = sb.from('messages').select('*');
-        if(activeGroup) query = query.eq('group_id', activeGroup);
-        else query = query.or(`and(expediteur_id.eq.${me.id},destinataire_id.eq.${target.id}),and(expediteur_id.eq.${target.id},destinataire_id.eq.${me.id})`);
-        
-        const { data } = await query.order('created_at', { ascending: true });
+        let q = sb.from('messages').select('*');
+        if(activeGroup) q = q.eq('group_id', activeGroup);
+        else q = q.or(`and(expediteur_id.eq.${me.id},destinataire_id.eq.${target.id}),and(expediteur_id.eq.${target.id},destinataire_id.eq.${me.id})`);
+        const { data } = await q.order('created_at', { ascending: true });
         document.getElementById('messages-box').innerHTML = data.map(m => {
-            const content = m.is_voice ? `<div class="voice-msg"><button class="voice-play-btn" onclick="new Audio('${m.texte}').play()">▶️</button> Note vocale</div>` : m.texte;
+            const content = m.is_voice ? `<button class="voice-play" onclick="new Audio('${m.texte}').play()">▶️</button> Note vocale` : m.texte;
             return `<div class="bulle ${m.expediteur_id === me.id ? 'moi' : 'autre'}">${content}</div>`;
         }).join('');
         document.getElementById('messages-box').scrollTop = document.getElementById('messages-box').scrollHeight;
     }
 
-    async function verifyMe() {
-        await sb.from('profiles').update({ is_verified: true }).eq('id', me.id);
-        alert("Tu es maintenant un étudiant certifié ! ✔️");
-        location.reload();
-    }
+    async function verifyMe() { await sb.from('profiles').update({ is_verified: true }).eq('id', me.id); alert("Certifié ! ✔️"); location.reload(); }
 
     function showView(id) {
         document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
         document.getElementById(id).classList.remove('hidden');
         document.getElementById('navbar').classList.toggle('hidden', id === 'page-signup');
         if(id === 'page-lobby') renderLobby();
+        if(id === 'page-confessions') loadConfessions();
         if(id === 'page-chat') {
             loadMessages();
-            document.getElementById('chat-name').innerText = activeGroup ? "Groupe" : target.nom;
-            document.getElementById('chat-verif').innerHTML = (target && target.is_verified) ? "✔️" : "";
+            document.getElementById('chat-name').innerText = activeGroup ? "Groupe Amphi" : target.nom;
+            document.getElementById('chat-img').src = activeGroup ? "https://cdn-icons-png.flaticon.com/512/32/32441.png" : target.photo;
+            document.getElementById('chat-verif').innerText = (target && target.is_verified) ? "✔️" : "";
         }
     }
 
-    function initRealtime() { sb.channel('any').on('postgres_changes', { event: '*', schema: 'public' }, () => { renderLobby(); loadMessages(); }).subscribe(); }
+    function initRealtime() { sb.channel('any').on('postgres_changes', { event: '*', schema: 'public' }, () => { renderLobby(); loadMessages(); loadConfessions(); }).subscribe(); }
 
     async function deconnecter() { if(me) await sb.from('profiles').delete().eq('id', me.id); localStorage.clear(); location.reload(); }
 
@@ -253,4 +270,4 @@
     };
 </script>
 </body>
-    </html>
+</html>
