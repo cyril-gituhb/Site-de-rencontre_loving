@@ -7,18 +7,12 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { 
-            --accent: #ff4d6d; 
-            --gradient: linear-gradient(135deg, #ff4e50, #f9d423); 
-            --purple: #6a1b9a;
-            --dark: #1a1a1a;
-            --red-chat: #ff4b2b;
-            --blue-chat: #0077b6;
+            --accent: #ff4d6d; --gradient: linear-gradient(135deg, #ff4e50, #f9d423); 
+            --purple: #6a1b9a; --dark: #1a1a1a; --red-chat: #ff4b2b; --blue-chat: #0077b6;
         }
-        
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         html, body { height: 100%; width: 100%; overflow: hidden; background: #90e0ef; }
         body { display: flex; justify-content: center; align-items: center; }
-        
         #app { width: 100vw; height: 100%; display: flex; flex-direction: column; background: white; position: relative; overflow: hidden; }
         @media (min-width: 600px) { #app { width: 400px; height: 92vh; border-radius: 30px; border: 8px solid #333; } }
 
@@ -31,35 +25,44 @@
         .view { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         .hidden { display: none !important; }
 
-        /* GUIDE OVERLAY */
-        #guide-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index: 5000; color:white; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:30px; text-align:center; }
-        .guide-step { margin-bottom: 20px; animation: fadeIn 0.5s; }
+        /* FORMULAIRE D'INSCRIPTION AMÉLIORÉ */
+        #page-auth { background: var(--gradient); justify-content: center; align-items: center; padding: 20px; }
+        .auth-card { background: white; padding: 30px; border-radius: 25px; width: 100%; max-width: 350px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+        .auth-card h2 { margin-bottom: 20px; font-size: 22px; color: var(--dark); }
+        .auth-card input, .auth-card select { 
+            width: 100%; padding: 14px; margin-bottom: 12px; border: 1.5px solid #eee; 
+            border-radius: 12px; font-size: 14px; outline: none; transition: 0.3s;
+        }
+        .auth-card input:focus { border-color: var(--accent); background: #fffcfd; }
+        .file-label { 
+            display: block; padding: 10px; background: #f8f9fa; border: 1px dashed #ccc; 
+            border-radius: 10px; margin-bottom: 10px; cursor: pointer; font-size: 13px; color: #666;
+        }
 
-        /* MUR STYLE */
-        #mur-list { flex: 1; overflow-y: auto; padding: 15px; background: #f3e5f5; }
-        .conf-item { background: white; padding: 15px; border-radius: 15px 15px 15px 0; margin-bottom: 12px; border-left: 5px solid var(--purple); box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-style: italic; }
+        /* VITESSE & CHARGEMENT */
+        #mur-list, #discover-feed, #matches-list, #messages-box { 
+            flex: 1; overflow-y: auto; padding: 15px; -webkit-overflow-scrolling: touch; 
+        }
+        .conf-item { background: white; padding: 15px; border-radius: 15px 15px 15px 0; margin-bottom: 12px; border-left: 5px solid var(--purple); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 
-        /* FEED & CARDS */
-        #discover-feed { flex: 1; overflow-y: auto; padding: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .profile-card { height: 200px; border-radius: 20px; position: relative; overflow: hidden; box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
+        /* CARDS */
+        #discover-feed { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .profile-card { height: 180px; border-radius: 18px; position: relative; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1); background: #eee; }
         .profile-img { width: 100%; height: 100%; object-fit: cover; }
-        .profile-info { position: absolute; bottom: 0; padding: 8px; background: linear-gradient(transparent, rgba(0,0,0,0.8)); color: white; width: 100%; font-size: 12px; }
+        .profile-info { position: absolute; bottom: 0; padding: 8px; background: linear-gradient(transparent, rgba(0,0,0,0.8)); color: white; width: 100%; font-size: 11px; }
 
-        /* CHAT */
-        #messages-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; background: #f0f2f5; }
-        .msg { max-width: 80%; padding: 10px 15px; border-radius: 18px; font-size: 14px; color: white; }
+        /* CHAT BULLS */
+        .msg { max-width: 80%; padding: 10px 15px; border-radius: 18px; font-size: 14px; color: white; margin-bottom: 5px; }
         .msg.moi { align-self: flex-end; background: var(--red-chat); border-bottom-right-radius: 2px; }
         .msg.autre { align-self: flex-start; background: var(--blue-chat); border-bottom-left-radius: 2px; }
 
-        /* BUTTONS */
         .btn-main { width: 100%; padding: 15px; border: none; border-radius: 15px; background: var(--dark); color: white; font-weight: bold; cursor: pointer; }
-        .btn-round { background: var(--accent); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; }
+        #guide-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index: 5000; color:white; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:40px; text-align:center; }
     </style>
 </head>
 <body>
 
 <div id="app">
-    <!-- NAVBAR -->
     <nav id="navbar" class="hidden">
         <div class="logo-text">KELVIN 🏖️</div>
         <div class="nav-icons">
@@ -70,58 +73,42 @@
         </div>
     </nav>
 
-    <!-- GUIDE DE FONCTIONNEMENT -->
     <div id="guide-overlay" class="hidden">
         <h2 style="color:var(--accent); margin-bottom:20px;">Guide KELVIN 🏖️</h2>
-        <div class="guide-step">🔥 <b>Flammes</b> : Clique sur le feu pour dire "Tu me plais".</div>
-        <div class="guide-step">🤫 <b>Mur</b> : Poste tes secrets et amours anonymement.</div>
-        <div class="guide-step">⚡ <b>Flash</b> : Recherche automatique d'un étudiant en ligne !</div>
-        <div class="guide-step">💬 <b>Match</b> : Si c'est réciproque, discutez en privé.</div>
+        <p>🔥 Flammes : Likez<br>🤫 Mur : Secrets anonymes<br>⚡ Flash : Chat rapide<br>💬 Match : Discutez</p>
         <button class="btn-main" style="background:var(--accent); margin-top:20px;" onclick="closeGuide()">C'EST PARTI !</button>
     </div>
 
-    <!-- AUTHENTICATION -->
-    <section id="page-auth" class="view" style="padding:20px; justify-content:center; background:var(--gradient);">
-        <div style="background:white; padding:30px; border-radius:25px; text-align:center;">
+    <section id="page-auth" class="view">
+        <div class="auth-card">
             <h2>Bienvenue ❤️</h2>
-            <input id="auth-email" type="email" placeholder="Email étudiant">
+            <input id="auth-email" type="email" placeholder="Ton Email">
             <div id="signup-fields" class="hidden">
                 <input id="auth-nom" type="text" placeholder="Ton Prénom">
                 <select id="auth-sexe">
                     <option value="fille">👩 Fille</option>
                     <option value="garcon">👨 Garçon</option>
                 </select>
-                <input type="file" onchange="preview(event)">
-                <center><img id="pre-img" style="width:60px; height:60px; border-radius:50%; display:none; object-fit:cover; margin:10px; border:2px solid var(--accent);"></center>
+                <label class="file-label" for="photo-in">📸 Choisir une photo de profil</label>
+                <input type="file" id="photo-in" class="hidden" onchange="preview(event)">
+                <center><img id="pre-img" style="width:60px; height:60px; border-radius:50%; display:none; object-fit:cover; margin-bottom:10px; border:2px solid var(--accent);"></center>
             </div>
-            <input id="auth-pass" type="password" placeholder="Mot de passe" class="hidden">
-            <button class="btn-main" onclick="handleAuth()">CONTINUER</button>
+            <input id="auth-pass" type="password" placeholder="Ton Mot de passe" class="hidden">
+            <button class="btn-main" id="auth-btn" onclick="handleAuth()">CONTINUER</button>
         </div>
     </section>
 
-    <!-- MUR DES SECRETS -->
     <section id="page-mur" class="view hidden">
-        <div style="padding:15px; background:var(--purple); color:white; text-align:center; font-weight:bold;">🤫 Mur des Secrets</div>
         <div id="mur-list"></div>
-        <div style="padding:10px; display:flex; gap:8px; background:white;">
-            <input id="mur-input" type="text" style="flex:1; padding:12px; border-radius:20px; border:1px solid #ddd;" placeholder="Dis un truc anonymement...">
-            <button onclick="postMur()" class="btn-round" style="background:var(--purple)">🤫</button>
+        <div style="padding:10px; display:flex; gap:8px; background:white; border-top:1px solid #eee;">
+            <input id="mur-input" type="text" style="flex:1; padding:12px; border-radius:20px; border:1px solid #ddd;" placeholder="Secret anonyme...">
+            <button onclick="postMur()" style="background:var(--purple); color:white; border:none; width:45px; height:45px; border-radius:50%;">🤫</button>
         </div>
     </section>
 
-    <!-- FEED -->
-    <section id="page-lobby" class="view hidden">
-        <div style="padding:15px; font-weight:bold; color:var(--accent);">Découvre les Étudiants 🔥</div>
-        <div id="discover-feed"></div>
-    </section>
+    <section id="page-lobby" class="view hidden"><div id="discover-feed"></div></section>
+    <section id="page-matches" class="view hidden"><div id="matches-list"></div></section>
 
-    <!-- MATCHES -->
-    <section id="page-matches" class="view hidden">
-        <div style="padding:15px; font-weight:bold; color:var(--accent);">Tes Matchs 💬</div>
-        <div id="matches-list"></div>
-    </section>
-
-    <!-- CHAT -->
     <section id="page-chat" class="view hidden">
         <div style="padding:10px; display:flex; align-items:center; gap:10px; border-bottom:1px solid #eee;">
             <button onclick="showView('page-matches')" style="border:none; background:none; font-size:20px;">←</button>
@@ -129,9 +116,9 @@
             <b id="chat-name">Nom</b>
         </div>
         <div id="messages-box"></div>
-        <div style="padding:10px; display:flex; gap:8px; background:white;">
+        <div style="padding:10px; display:flex; gap:8px; background:white; border-top:1px solid #eee;">
             <input id="text-input" type="text" style="flex:1; padding:12px; border-radius:20px; border:1px solid #ddd;" placeholder="Message...">
-            <button onclick="sendMsg()" class="btn-round">➤</button>
+            <button onclick="sendMsg()" style="background:var(--accent); color:white; border:none; width:45px; height:45px; border-radius:50%;">➤</button>
         </div>
     </section>
 </div>
@@ -141,69 +128,45 @@
     const S_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvb3ZldmdrbWFyb3pqdWx1bGtyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyOTE3MzMsImV4cCI6MjA5Njg2NzczM30.Iao5_dnv4j71IPSpy-rdWGR0NPzDEUBMERPFVE8o1G0";
     const sb = supabase.createClient(S_URL, S_KEY);
 
-    let me = null, target = null, step = 1;
+    let me = null, target = null, step = 1, cachedUsers = [];
 
     function preview(e) { const r = new FileReader(); r.onload = () => { document.getElementById('pre-img').src = r.result; document.getElementById('pre-img').style.display='block'; }; r.readAsDataURL(e.target.files[0]); }
     function closeGuide() { document.getElementById('guide-overlay').classList.add('hidden'); localStorage.setItem('kelvin_guide', '1'); }
 
-    // --- AUTH ---
     async function handleAuth() {
-        const email = document.getElementById('auth-email').value;
-        const pass = document.getElementById('auth-pass').value;
+        const btn = document.getElementById('auth-btn'); btn.innerText = "Chargement...";
+        const email = document.getElementById('auth-email').value; const pass = document.getElementById('auth-pass').value;
         try {
             if(step === 1) {
                 const { data } = await sb.from('profiles').select('*').eq('email', email);
-                if(data && data.length > 0) {
-                    document.getElementById('auth-pass').classList.remove('hidden'); step = 2;
-                } else {
-                    document.getElementById('signup-fields').classList.remove('hidden');
-                    document.getElementById('auth-pass').classList.remove('hidden'); step = 3;
-                }
+                if(data && data.length > 0) { document.getElementById('auth-pass').classList.remove('hidden'); step = 2; }
+                else { document.getElementById('signup-fields').classList.remove('hidden'); document.getElementById('auth-pass').classList.remove('hidden'); step = 3; }
+                btn.innerText = "CONTINUER";
             } else if(step === 2) {
                 const { data, error } = await sb.from('profiles').select('*').eq('email', email).eq('password', pass).single();
-                if(error) throw new Error("Erreur"); startApp(data);
+                if(error) throw error; startApp(data);
             } else if(step === 3) {
-                const nom = document.getElementById('auth-nom').value;
-                const photo = document.getElementById('pre-img').src;
-                const sexe = document.getElementById('auth-sexe').value;
-                const { data, error } = await sb.from('profiles').insert([{ email, password: pass, nom, photo, sexe }]).select();
+                const { data, error } = await sb.from('profiles').insert([{ email, password: pass, nom: document.getElementById('auth-nom').value, photo: document.getElementById('pre-img').src, sexe: document.getElementById('auth-sexe').value }]).select();
                 if(error) throw error; startApp(data[0]);
             }
-        } catch (e) { alert("Vérifie tes infos ❤️"); }
+        } catch (e) { alert("Erreur d'infos ❤️"); btn.innerText = "CONTINUER"; }
     }
 
     function startApp(data) {
         me = data; localStorage.setItem('kelvin_user_id', me.id);
-        showView('page-lobby');
-        if(!localStorage.getItem('kelvin_guide')) document.getElementById('guide-overlay').classList.remove('hidden');
+        showView('page-lobby'); if(!localStorage.getItem('kelvin_guide')) document.getElementById('guide-overlay').classList.remove('hidden');
         initRealtime();
     }
 
-    // --- MUR ---
-    async function postMur() {
-        const txt = document.getElementById('mur-input').value; if(!txt) return;
-        await sb.from('confessions').insert([{ texte: txt }]);
-        document.getElementById('mur-input').value = "";
-    }
+    // --- OPTIMISATION CHARGEMENT ---
     async function loadMur() {
-        const { data } = await sb.from('confessions').select('*').order('created_at', { ascending: false });
+        const { data } = await sb.from('confessions').select('*').order('created_at', { ascending: false }).limit(20);
         document.getElementById('mur-list').innerHTML = data.map(c => `<div class="conf-item">"${c.texte}"</div>`).join('');
     }
 
-    // --- AUTOMATIC SEARCH (FLASH ⚡) ---
-    async function autoSearch() {
-        const opposé = me.sexe === 'fille' ? 'garcon' : 'fille';
-        const { data: users } = await sb.from('profiles').select('*').eq('sexe', opposé).neq('id', me.id).limit(10);
-        if(!users || users.length === 0) return alert("Personne en ligne pour le moment... 🏜️");
-        
-        const randomUser = users[Math.floor(Math.random() * users.length)];
-        alert("⚡ FLASH ! Discussion automatique lancée avec " + randomUser.nom);
-        openChat(randomUser);
-    }
-
-    // --- LOGIQUE CHAT & FEED ---
     async function renderFeed() {
-        const { data } = await sb.from('profiles').select('*').neq('id', me.id);
+        const { data } = await sb.from('profiles').select('*').neq('id', me.id).limit(20);
+        cachedUsers = data;
         document.getElementById('discover-feed').innerHTML = data.map(u => `
             <div class="profile-card" onclick="openChat(${JSON.stringify(u).replace(/"/g, '&quot;')})">
                 <img src="${u.photo}" class="profile-img">
@@ -212,18 +175,26 @@
         `).join('');
     }
 
-    async function openChat(u) { target = u; document.getElementById('chat-name').innerText = target.nom; document.getElementById('chat-img').src = target.photo; showView('page-chat'); loadMsgs(); }
+    async function autoSearch() {
+        const opp = me.sexe === 'fille' ? 'garcon' : 'fille';
+        const { data } = await sb.from('profiles').select('*').eq('sexe', opp).neq('id', me.id).limit(10);
+        if(!data || data.length === 0) return alert("Personne en ligne... 🏜️");
+        openChat(data[Math.floor(Math.random() * data.length)]);
+    }
+
+    function openChat(u) { target = u; document.getElementById('chat-name').innerText = target.nom; document.getElementById('chat-img').src = target.photo; showView('page-chat'); loadMsgs(); }
     
     async function sendMsg() {
-        const val = document.getElementById('text-input').value; if(!val) return;
-        await sb.from('messages').insert([{ expediteur_id: me.id, destinataire_id: target.id, texte: val }]);
-        document.getElementById('text-input').value = ""; loadMsgs();
+        const v = document.getElementById('text-input').value; if(!v) return;
+        document.getElementById('text-input').value = "";
+        await sb.from('messages').insert([{ expediteur_id: me.id, destinataire_id: target.id, texte: v }]);
     }
 
     async function loadMsgs() {
         const { data } = await sb.from('messages').select('*').or(`and(expediteur_id.eq.${me.id},destinataire_id.eq.${target.id}),and(expediteur_id.eq.${target.id},destinataire_id.eq.${me.id})`).order('created_at', { ascending: true });
-        document.getElementById('messages-box').innerHTML = data.map(m => `<div class="msg ${m.expediteur_id === me.id ? 'moi' : 'autre'}">${m.texte}</div>`).join('');
-        document.getElementById('messages-box').scrollTop = document.getElementById('messages-box').scrollHeight;
+        const box = document.getElementById('messages-box');
+        box.innerHTML = data.map(m => `<div class="msg ${m.expediteur_id === me.id ? 'moi' : 'autre'}">${m.texte}</div>`).join('');
+        box.scrollTop = box.scrollHeight;
     }
 
     function showView(id) {
@@ -234,10 +205,12 @@
         if(id === 'page-mur') loadMur();
     }
 
-    function initRealtime() { sb.channel('any').on('postgres_changes', { event: '*', schema: 'public' }, () => { 
-        if(!document.getElementById('page-chat').classList.contains('hidden')) loadMsgs(); 
-        if(!document.getElementById('page-mur').classList.contains('hidden')) loadMur(); 
-    }).subscribe(); }
+    function initRealtime() {
+        sb.channel('db-changes').on('postgres_changes', { event: '*', schema: 'public' }, (payload) => {
+            if(payload.table === 'messages' && !document.getElementById('page-chat').classList.contains('hidden')) loadMsgs();
+            if(payload.table === 'confessions' && !document.getElementById('page-mur').classList.contains('hidden')) loadMur();
+        }).subscribe();
+    }
 
     window.onload = async () => {
         const id = localStorage.getItem('kelvin_user_id');
