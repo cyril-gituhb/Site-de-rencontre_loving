@@ -25,6 +25,16 @@
         .view { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         .hidden { display: none !important; }
 
+        /* GUIDE OVERLAY */
+        #guide-overlay {
+            position: absolute; top:0; left:0; width:100%; height:100%; 
+            background: rgba(0,0,0,0.95); z-index: 9999; color: white;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 30px; text-align: center;
+        }
+        .guide-step { margin-bottom: 20px; animation: fadeIn 0.5s; }
+        .guide-icon { font-size: 30px; margin-bottom: 5px; }
+
         /* AUTH FORM */
         #page-auth { background: var(--gradient); justify-content: center; align-items: center; padding: 20px; }
         .auth-card { background: white; padding: 30px; border-radius: 25px; width: 100%; max-width: 350px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
@@ -51,11 +61,34 @@
         #mur-list, #discover-feed { flex: 1; overflow-y: auto; padding: 15px; }
         .conf-item { background: white; padding: 15px; border-radius: 15px 15px 15px 0; margin-bottom: 12px; border-left: 5px solid var(--purple); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .btn-main { width: 100%; padding: 15px; border: none; border-radius: 15px; background: var(--dark); color: white; font-weight: bold; cursor: pointer; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
 <div id="app">
+    <!-- GUIDE D'UTILISATION -->
+    <div id="guide-overlay" class="hidden">
+        <h2 style="color:var(--accent); margin-bottom:20px;">Guide KELVIN LOVING 🏖️</h2>
+        <div class="guide-step">
+            <div class="guide-icon">🔥</div>
+            <p><b>Découverte</b> : Clique sur les profils pour lancer une discussion privée.</p>
+        </div>
+        <div class="guide-step">
+            <div class="guide-icon">🤫</div>
+            <p><b>Le Mur</b> : Partage tes secrets ou tes amours de façon totalement anonyme.</p>
+        </div>
+        <div class="guide-step">
+            <div class="guide-icon">⚡</div>
+            <p><b>Flash Search</b> : Trouve instantanément un étudiant en ligne pour discuter.</p>
+        </div>
+        <div class="guide-step">
+            <div class="guide-icon">❤️‍🔥</div>
+            <p><b>Social Feed</b> : Publie tes plus belles photos et reçois des ❤️ de la communauté.</p>
+        </div>
+        <button class="btn-main" style="background:var(--accent); margin-top:20px;" onclick="closeGuide()">J'AI COMPRIS !</button>
+    </div>
+
     <nav id="navbar" class="hidden">
         <div class="logo-text">KELVIN 🏖️</div>
         <div class="nav-icons">
@@ -129,6 +162,11 @@
     let me = null, target = null, step = 1;
 
     function preview(e, id) { const r = new FileReader(); r.onload = () => { document.getElementById(id).src = r.result; document.getElementById(id).style.display='block'; }; r.readAsDataURL(e.target.files[0]); }
+    
+    function closeGuide() {
+        document.getElementById('guide-overlay').classList.add('hidden');
+        localStorage.setItem('kelvin_guide_seen', 'true');
+    }
 
     async function handleAuth() {
         const email = document.getElementById('auth-email').value; const pass = document.getElementById('auth-pass').value;
@@ -149,10 +187,13 @@
 
     function startApp(data) {
         me = data; localStorage.setItem('kelvin_user_id', me.id);
-        showView('page-social'); initRealtime();
+        showView('page-social'); 
+        if(!localStorage.getItem('kelvin_guide_seen')) {
+            document.getElementById('guide-overlay').classList.remove('hidden');
+        }
+        initRealtime();
     }
 
-    // --- SOCIAL ❤️‍🔥 ---
     async function postSocial(e) {
         const r = new FileReader();
         r.onload = async () => {
@@ -186,7 +227,6 @@
         loadSocial();
     }
 
-    // --- MUR ---
     async function postMur() {
         const v = document.getElementById('mur-input').value; if(!v) return;
         await sb.from('confessions').insert([{ texte: v }]);
@@ -197,7 +237,6 @@
         document.getElementById('mur-list').innerHTML = data.map(c => `<div class="conf-item">"${c.texte}"</div>`).join('');
     }
 
-    // --- CHAT & FEED ---
     async function renderFeed() {
         const { data } = await sb.from('profiles').select('*').neq('id', me.id).limit(20);
         document.getElementById('discover-feed').innerHTML = data.map(u => `
